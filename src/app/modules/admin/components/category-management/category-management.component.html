@@ -1,0 +1,236 @@
+<div class="category-management-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>Category Management</h1>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="showAddForm()">
+        <mat-icon>add</mat-icon>
+        Add Category
+      </button>
+      <button mat-stroked-button (click)="resetToDefaults()">
+        <mat-icon>restore</mat-icon>
+        Reset to Defaults
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <div class="filters-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search categories</mat-label>
+          <input 
+            matInput 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="onSearchChange()"
+            placeholder="Search by name or description...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-slide-toggle 
+          [(ngModel)]="showActiveOnly" 
+          (ngModelChange)="onFilterChange()"
+          class="active-filter">
+          Show active only
+        </mat-slide-toggle>
+
+        <button mat-icon-button (click)="refreshCategories()" [disabled]="loading">
+          <mat-icon [class.spinning]="loading">refresh</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Add/Edit Form -->
+  <mat-card *ngIf="showForm" class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        {{ editingCategory ? 'Edit Category' : 'Add New Category' }}
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()">
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Category Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter category name">
+            <mat-error>{{ getFormErrorMessage('name') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Icon</mat-label>
+            <input matInput formControlName="icon" placeholder="Material icon name">
+            <mat-icon matSuffix>{{ categoryForm.get('icon')?.value || 'category' }}</mat-icon>
+            <mat-error>{{ getFormErrorMessage('icon') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea 
+            matInput 
+            formControlName="description" 
+            rows="3"
+            placeholder="Enter category description">
+          </textarea>
+          <mat-error>{{ getFormErrorMessage('description') }}</mat-error>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Display Order</mat-label>
+            <input matInput type="number" formControlName="displayOrder" min="0" max="100">
+            <mat-error>{{ getFormErrorMessage('displayOrder') }}</mat-error>
+          </mat-form-field>
+
+          <mat-slide-toggle formControlName="isActive" class="active-toggle">
+            Active
+          </mat-slide-toggle>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="cancelEdit()" [disabled]="saving">
+        Cancel
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="saveCategory()" 
+        [disabled]="saving || categoryForm.invalid">
+        <mat-icon *ngIf="saving">hourglass_empty</mat-icon>
+        {{ editingCategory ? 'Update' : 'Create' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Categories Table -->
+  <mat-card class="table-card">
+    <div class="table-container">
+      <table mat-table [dataSource]="categoriesData" matSort (matSortChange)="onSortChange($event)">
+        
+        <!-- Icon Column -->
+        <ng-container matColumnDef="icon">
+          <th mat-header-cell *matHeaderCellDef>Icon</th>
+          <td mat-cell *matCellDef="let category">
+            <mat-icon class="category-icon">{{ category.icon }}</mat-icon>
+          </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let category">
+            <div class="category-name">
+              {{ category.name }}
+              <mat-chip *ngIf="!category.isActive" class="inactive-chip">Inactive</mat-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let category">
+            <div class="description-text">{{ category.description }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Offer Count Column -->
+        <ng-container matColumnDef="offerCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Offers</th>
+          <td mat-cell *matCellDef="let category">
+            <div class="offer-count">
+              <mat-icon class="count-icon">local_offer</mat-icon>
+              {{ category.offerCount }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Active Status Column -->
+        <ng-container matColumnDef="isActive">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let category">
+            <mat-slide-toggle 
+              [checked]="category.isActive"
+              (change)="toggleCategoryStatus(category)"
+              [aria-label]="'Toggle ' + category.name + ' status'">
+            </mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <!-- Display Order Column -->
+        <ng-container matColumnDef="displayOrder">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Order</th>
+          <td mat-cell *matCellDef="let category">
+            <div class="display-order">{{ category.displayOrder }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let category">
+            <div class="action-buttons">
+              <button 
+                mat-icon-button 
+                (click)="editCategory(category)"
+                [attr.aria-label]="'Edit ' + category.name">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                color="warn"
+                (click)="deleteCategory(category)"
+                [disabled]="category.offerCount > 0"
+                [attr.aria-label]="'Delete ' + category.name">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            [class.inactive-row]="!row.isActive"></tr>
+      </table>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-overlay">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading categories...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="categoriesData.length === 0 && !loading" class="empty-state">
+        <mat-icon class="empty-icon">category</mat-icon>
+        <h3>No categories found</h3>
+        <p *ngIf="searchTerm || showActiveOnly; else noDataTemplate">
+          Try adjusting your search or filter criteria.
+        </p>
+        <ng-template #noDataTemplate>
+          <p>Get started by adding your first category.</p>
+        </ng-template>
+        <button mat-raised-button color="primary" (click)="showAddForm()">
+          <mat-icon>add</mat-icon>
+          Add Category
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator 
+      *ngIf="categoriesData.length"
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="Select page of categories">
+    </mat-paginator>
+  </mat-card>
+</div>

@@ -35,8 +35,8 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('./components/admin-dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent)
       },
       {
-        path: 'category/:id',
-        component: PlaceholderCategoryMgmtComponent
+        path: 'categories',
+        loadComponent: () => import('./components/category-management/category-management.component').then(c => c.CategoryManagementComponent)
       },
       {
         path: 'utilities',
