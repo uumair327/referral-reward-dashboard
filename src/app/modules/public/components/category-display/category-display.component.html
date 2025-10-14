@@ -1,0 +1,111 @@
+<div class="category-display-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading category...</p>
+  </div>
+
+  <!-- Category Content -->
+  <div *ngIf="!loading">
+    <!-- Header Section -->
+    <div class="header-section" *ngIf="category$ | async as category">
+      <button mat-icon-button class="back-button" (click)="goBack()" aria-label="Go back to categories">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      
+      <div class="category-header">
+        <div class="category-icon">
+          <mat-icon>{{ category.icon }}</mat-icon>
+        </div>
+        <div class="category-info">
+          <h1 class="category-title">{{ category.name }}</h1>
+          <p class="category-description">{{ category.description }}</p>
+          <p class="offer-count">{{ category.offerCount }} offers available</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search offers</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="onSearchChange()"
+          placeholder="Search by title, description, or code..."
+          aria-label="Search offers">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Offers Section -->
+    <div class="offers-section" *ngIf="offers$ | async as offersResponse">
+      <!-- Offers Grid -->
+      <div *ngIf="offersResponse.data.length > 0" class="offers-grid">
+        <mat-card 
+          *ngFor="let offer of offersResponse.data; trackBy: trackByOffer"
+          class="offer-card"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'Open ' + offer.title + ' referral link'"
+          (click)="onOfferClick(offer)"
+          (keydown.enter)="onOfferClick(offer)"
+          (keydown.space)="onOfferClick(offer)">
+          
+          <mat-card-header>
+            <mat-card-title>{{ offer.title }}</mat-card-title>
+            <mat-card-subtitle *ngIf="offer.referralCode">
+              Code: {{ offer.referralCode }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <p class="offer-description" [innerHTML]="offer.description"></p>
+            <div class="offer-stats" *ngIf="offer.clickCount">
+              <mat-icon class="stats-icon">visibility</mat-icon>
+              <span>{{ offer.clickCount }} clicks</span>
+            </div>
+          </mat-card-content>
+          
+          <mat-card-actions align="end">
+            <button mat-raised-button color="primary">
+              <mat-icon>open_in_new</mat-icon>
+              Get Offer
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <!-- Pagination -->
+      <mat-paginator 
+        *ngIf="offersResponse.data.length > 0"
+        [length]="offersResponse.total"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage - 1"
+        [pageSizeOptions]="[6, 12, 24]"
+        [showFirstLastButtons]="true"
+        (page)="onPageChange($event)"
+        aria-label="Select page of offers">
+      </mat-paginator>
+
+      <!-- Empty State -->
+      <div *ngIf="offersResponse.data.length === 0" class="empty-state">
+        <mat-icon class="empty-icon">search_off</mat-icon>
+        <h3 *ngIf="searchTerm; else noOffersTemplate">No offers found</h3>
+        <ng-template #noOffersTemplate>
+          <h3>No offers available</h3>
+        </ng-template>
+        <p *ngIf="searchTerm; else noOffersDescTemplate">
+          Try adjusting your search terms or browse all offers.
+        </p>
+        <ng-template #noOffersDescTemplate>
+          <p>Offers for this category will appear here once they are added.</p>
+        </ng-template>
+        <button *ngIf="searchTerm" mat-button color="primary" (click)="searchTerm = ''; onSearchChange()">
+          Clear Search
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

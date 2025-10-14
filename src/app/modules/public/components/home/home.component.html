@@ -1,0 +1,65 @@
+<div class="home-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="main-title">Referral & Rewards Dashboard</h1>
+    <p class="subtitle">Discover the best referral offers across various categories</p>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading categories...</p>
+  </div>
+
+  <!-- Categories Grid -->
+  <div *ngIf="!loading" class="categories-section">
+    <h2 class="section-title">Browse Categories</h2>
+    
+    <div class="categories-grid">
+      <mat-card 
+        *ngFor="let category of categories$ | async; trackBy: trackByCategory"
+        class="category-card"
+        [routerLink]="['/category', category.id]"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Browse ' + category.name + ' offers'"
+        (click)="onCategoryClick(category)"
+        (keydown.enter)="onCategoryClick(category)"
+        (keydown.space)="onCategoryClick(category)">
+        
+        <mat-card-header>
+          <div mat-card-avatar class="category-icon">
+            <mat-icon>{{ category.icon }}</mat-icon>
+          </div>
+          <mat-card-title>{{ category.name }}</mat-card-title>
+          <mat-card-subtitle>{{ category.offerCount }} offers available</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <p class="category-description">{{ category.description }}</p>
+        </mat-card-content>
+        
+        <mat-card-actions align="end">
+          <button mat-button color="primary">
+            <mat-icon>arrow_forward</mat-icon>
+            View Offers
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="(categories$ | async)?.length === 0" class="empty-state">
+      <mat-icon class="empty-icon">category</mat-icon>
+      <h3>No Categories Available</h3>
+      <p>Categories will appear here once they are added by the administrator.</p>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <div class="footer-section">
+    <p class="footer-text">
+      Find the best referral deals and earn rewards across multiple platforms
+    </p>
+  </div>
+</div>

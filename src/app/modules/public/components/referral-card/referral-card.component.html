@@ -1,0 +1,75 @@
+<mat-card 
+  class="referral-card"
+  [class.compact]="compact"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'Open ' + offer.title + ' referral offer'"
+  (click)="onOfferClick()"
+  (keydown)="onKeyDown($event)">
+  
+  <!-- Card Header -->
+  <mat-card-header>
+    <div mat-card-avatar class="offer-avatar" *ngIf="showCategory && category">
+      <mat-icon>{{ category.icon }}</mat-icon>
+    </div>
+    
+    <mat-card-title class="offer-title">
+      {{ offer.title }}
+    </mat-card-title>
+    
+    <mat-card-subtitle *ngIf="showCategory && category" class="category-name">
+      {{ category.name }}
+    </mat-card-subtitle>
+  </mat-card-header>
+  
+  <!-- Card Content -->
+  <mat-card-content>
+    <!-- Referral Code Chip -->
+    <div class="code-section" *ngIf="offer.referralCode">
+      <mat-chip-set>
+        <mat-chip 
+          class="referral-code-chip"
+          (click)="onCopyCode($event)"
+          [attr.aria-label]="'Copy referral code ' + offer.referralCode">
+          <mat-icon matChipTrailingIcon>content_copy</mat-icon>
+          {{ offer.referralCode }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+    
+    <!-- Description -->
+    <p class="offer-description" [class.compact]="compact" [innerHTML]="offer.description"></p>
+    
+    <!-- Stats Section -->
+    <div class="stats-section" *ngIf="!compact">
+      <div class="stat-item" *ngIf="offer.clickCount && offer.clickCount > 0">
+        <mat-icon class="stat-icon">visibility</mat-icon>
+        <span>{{ formatClickCount(offer.clickCount) }} clicks</span>
+      </div>
+      
+      <div class="stat-item">
+        <mat-icon class="stat-icon">schedule</mat-icon>
+        <span>Updated {{ getFormattedDate(offer.updatedAt) }}</span>
+      </div>
+    </div>
+  </mat-card-content>
+  
+  <!-- Card Actions -->
+  <mat-card-actions align="end">
+    <button 
+      mat-raised-button 
+      color="primary" 
+      class="get-offer-btn"
+      [attr.aria-label]="'Get ' + offer.title + ' offer'">
+      <mat-icon>open_in_new</mat-icon>
+      <span *ngIf="!compact">Get Offer</span>
+      <span *ngIf="compact">Get</span>
+    </button>
+  </mat-card-actions>
+  
+  <!-- Hover Overlay -->
+  <div class="hover-overlay">
+    <mat-icon class="external-link-icon">launch</mat-icon>
+    <span class="hover-text">Click to open offer</span>
+  </div>
+</mat-card>
