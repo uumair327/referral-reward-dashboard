@@ -103,16 +103,18 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
-          <textarea 
-            matInput 
-            formControlName="description" 
-            rows="4"
-            placeholder="Enter offer description">
-          </textarea>
-          <mat-error>{{ getFormErrorMessage('description') }}</mat-error>
-        </mat-form-field>
+        <div class="description-field">
+          <label class="field-label">Description</label>
+          <app-rich-text-editor
+            formControlName="description"
+            placeholder="Enter offer description with formatting..."
+            [maxLength]="1000"
+            [autoSave]="true">
+          </app-rich-text-editor>
+          <mat-error *ngIf="offerForm.get('description')?.invalid && offerForm.get('description')?.touched">
+            {{ getFormErrorMessage('description') }}
+          </mat-error>
+        </div>
 
         <div class="form-row">
           <mat-form-field appearance="outline">

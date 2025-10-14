@@ -25,6 +25,7 @@ import {
   SortDirection 
 } from '../../../../models';
 import { CategoryService, ValidationService } from '../../../../services';
+import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
 
 @Component({
   selector: 'app-category-management',
@@ -46,7 +47,8 @@ import { CategoryService, ValidationService } from '../../../../services';
     MatSnackBarModule,
     MatCardModule,
     MatChipsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    RichTextEditorComponent
   ],
   templateUrl: './category-management.component.html',
   styleUrl: './category-management.component.scss'

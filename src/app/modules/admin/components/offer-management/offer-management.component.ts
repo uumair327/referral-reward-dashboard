@@ -29,6 +29,7 @@ import {
   SortDirection 
 } from '../../../../models';
 import { ReferralService, CategoryService, ValidationService } from '../../../../services';
+import { RichTextEditorComponent } from '../rich-text-editor/rich-text-editor.component';
 
 @Component({
   selector: 'app-offer-management',
@@ -52,7 +53,8 @@ import { ReferralService, CategoryService, ValidationService } from '../../../..
     MatChipsModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,
-    MatMenuModule
+    MatMenuModule,
+    RichTextEditorComponent
   ],
   templateUrl: './offer-management.component.html',
   styleUrl: './offer-management.component.scss'

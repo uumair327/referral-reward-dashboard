@@ -96,6 +96,26 @@
   .full-width {
     width: 100%;
   }
+  
+  .description-field {
+    width: 100%;
+    margin-bottom: 1rem;
+    
+    .field-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.6);
+      margin-bottom: 0.5rem;
+    }
+    
+    mat-error {
+      font-size: 0.75rem;
+      color: #f44336;
+      margin-top: 0.25rem;
+      display: block;
+    }
+  }
 }
 
 .table-card {

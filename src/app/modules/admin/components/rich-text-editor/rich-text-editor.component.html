@@ -1,0 +1,217 @@
+<div class="rich-text-editor-container">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <!-- Text Formatting -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="toggleBold()" 
+        matTooltip="Bold (Ctrl+B)"
+        class="format-btn">
+        <mat-icon>format_bold</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="toggleItalic()" 
+        matTooltip="Italic (Ctrl+I)"
+        class="format-btn">
+        <mat-icon>format_italic</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="toggleUnderline()" 
+        matTooltip="Underline (Ctrl+U)"
+        class="format-btn">
+        <mat-icon>format_underlined</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider vertical></mat-divider>
+
+    <!-- Lists -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="insertUnorderedList()" 
+        matTooltip="Bullet List"
+        class="format-btn">
+        <mat-icon>format_list_bulleted</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="insertOrderedList()" 
+        matTooltip="Numbered List"
+        class="format-btn">
+        <mat-icon>format_list_numbered</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider vertical></mat-divider>
+
+    <!-- Headings -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="formatBlock('h2')" 
+        matTooltip="Heading 2"
+        class="format-btn">
+        <mat-icon>title</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="formatBlock('h3')" 
+        matTooltip="Heading 3"
+        class="format-btn">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="formatBlock('p')" 
+        matTooltip="Paragraph"
+        class="format-btn">
+        <mat-icon>notes</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider vertical></mat-divider>
+
+    <!-- Links -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="createLink()" 
+        matTooltip="Insert Link"
+        class="format-btn">
+        <mat-icon>link</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="unlink()" 
+        matTooltip="Remove Link"
+        class="format-btn">
+        <mat-icon>link_off</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider vertical></mat-divider>
+
+    <!-- Utilities -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="insertHorizontalRule()" 
+        matTooltip="Insert Horizontal Line"
+        class="format-btn">
+        <mat-icon>horizontal_rule</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="removeFormat()" 
+        matTooltip="Clear Formatting"
+        class="format-btn">
+        <mat-icon>format_clear</mat-icon>
+      </button>
+    </div>
+
+    <!-- Spacer -->
+    <div class="toolbar-spacer"></div>
+
+    <!-- View Controls -->
+    <div class="toolbar-group">
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="togglePreview()" 
+        [matTooltip]="isPreviewMode ? 'Edit Mode' : 'Preview Mode'"
+        class="format-btn"
+        [class.active]="isPreviewMode">
+        <mat-icon>{{ isPreviewMode ? 'edit' : 'preview' }}</mat-icon>
+      </button>
+      
+      <button 
+        mat-icon-button 
+        type="button"
+        (click)="clearContent()" 
+        matTooltip="Clear All Content"
+        class="format-btn warn">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Editor Tabs -->
+  <mat-tab-group class="editor-tabs" [selectedIndex]="isPreviewMode ? 1 : 0">
+    <!-- Edit Tab -->
+    <mat-tab label="Edit">
+      <div class="editor-content">
+        <div 
+          #editor
+          class="editor"
+          [class.error]="isCharacterLimitExceeded()"
+          [attr.data-placeholder]="placeholder"
+          role="textbox"
+          [attr.aria-label]="placeholder">
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Preview Tab -->
+    <mat-tab label="Preview">
+      <div class="preview-content">
+        <div 
+          class="preview" 
+          [innerHTML]="sanitizeContent(content)"
+          *ngIf="hasContent(); else emptyPreview">
+        </div>
+        <ng-template #emptyPreview>
+          <div class="empty-preview">
+            <mat-icon>preview</mat-icon>
+            <p>Nothing to preview yet. Start typing in the editor to see your content here.</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-left">
+      <span class="character-count" [class.error]="isCharacterLimitExceeded()">
+        {{ characterCount }} / {{ maxLength }} characters
+      </span>
+      <span class="remaining-count" *ngIf="!isCharacterLimitExceeded()">
+        ({{ getRemainingCharacters() }} remaining)
+      </span>
+      <span class="exceeded-warning" *ngIf="isCharacterLimitExceeded()">
+        <mat-icon class="warning-icon">warning</mat-icon>
+        Character limit exceeded
+      </span>
+    </div>
+    
+    <div class="status-right">
+      <span class="auto-save-indicator" *ngIf="autoSave">
+        <mat-icon>save</mat-icon>
+        Auto-save enabled
+      </span>
+    </div>
+  </div>
+</div>
