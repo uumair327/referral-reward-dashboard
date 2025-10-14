@@ -1,59 +1,120 @@
-# ReferralRewardDashboard
+# Referral & Rewards Dashboard
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.5.
+A modern, responsive web application for managing and displaying referral offers across various categories. Built with Angular 17+ and Material Design.
 
-## Development server
+## Features
 
-To start a local development server, run:
+### Public Interface
+- **Category Browse**: Explore referral offers by category (Demat Accounts, Medical Apps, Hospitality, Entertainment, Online Products)
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Search & Filter**: Find specific offers with real-time search
+- **Click Tracking**: Automatic tracking of referral link clicks
 
+### Admin Dashboard
+- **Category Management**: Create, edit, and organize referral categories
+- **Offer Management**: Full CRUD operations for referral offers with bulk actions
+- **Rich Text Editor**: Format descriptions with WYSIWYG editor
+- **Admin Utilities**: Link validation, referral code generation, and content preview tools
+- **Authentication**: Secure admin access with route guards
+
+## Technology Stack
+
+- **Frontend**: Angular 17+ with standalone components
+- **UI Framework**: Angular Material Design
+- **Styling**: SCSS with responsive design
+- **State Management**: RxJS with Angular services
+- **Storage**: Browser localStorage for data persistence
+- **Build Tool**: Angular CLI with Webpack
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18.x or 20.x
+- npm 9.x or higher
+
+### Installation
+
+1. Clone the repository
 ```bash
-ng serve
+git clone <repository-url>
+cd referral-reward-dashboard
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+2. Install dependencies
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+3. Start the development server
 ```bash
-ng generate --help
+npm start
 ```
 
-## Building
+4. Navigate to `http://localhost:4200/`
 
-To build the project run:
+### Admin Access
+- URL: `http://localhost:4200/admin/login`
+- Username: `admin`
+- Password: `admin123`
 
-```bash
-ng build
+## Available Scripts
+
+- `npm start` - Start development server
+- `npm run build` - Build for development
+- `npm run build:prod` - Build for production
+- `npm test` - Run unit tests
+- `npm run test:ci` - Run tests in CI mode
+- `npm run lint` - Run linting
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── models/           # Data models and interfaces
+│   ├── services/         # Business logic and data services
+│   ├── modules/
+│   │   ├── public/       # Public-facing components
+│   │   ├── admin/        # Admin dashboard components
+│   │   └── shared/       # Shared components and utilities
+│   └── ...
+├── assets/               # Static assets
+└── ...
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Key Components
 
-## Running unit tests
+### Public Components
+- **HomeComponent**: Landing page with category grid
+- **CategoryDisplayComponent**: Category-specific offer listings
+- **ReferralCardComponent**: Individual offer display cards
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Admin Components
+- **AdminDashboardComponent**: Main admin interface
+- **CategoryManagementComponent**: Category CRUD operations
+- **OfferManagementComponent**: Offer management with bulk actions
+- **RichTextEditorComponent**: WYSIWYG content editor
+- **UtilitiesComponent**: Admin tools and utilities
 
-```bash
-ng test
-```
+## Data Models
 
-## Running end-to-end tests
+### Core Models
+- **ReferralOffer**: Individual referral offers with links and codes
+- **Category**: Offer categories with icons and descriptions
+- **AdminSettings**: Application configuration settings
 
-For end-to-end (e2e) testing, run:
+## Contributing
 
-```bash
-ng e2e
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## License
 
-## Additional Resources
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Support
+
+For support and questions, please open an issue in the GitHub repository.

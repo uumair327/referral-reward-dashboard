@@ -5,8 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
     "serve:ssr:referral-reward-dashboard": "node dist/referral-reward-dashboard/server/server.mjs"
   },
   "prettier": {
