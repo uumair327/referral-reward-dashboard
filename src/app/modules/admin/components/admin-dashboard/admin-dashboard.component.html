@@ -1,0 +1,191 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar Navigation -->
+  <mat-sidenav 
+    #drawer 
+    class="sidenav" 
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false">
+    
+    <!-- Sidebar Header -->
+    <div class="sidenav-header">
+      <div class="logo-section">
+        <mat-icon class="logo-icon">dashboard</mat-icon>
+        <span class="logo-text">Admin Panel</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <mat-nav-list class="nav-list">
+      <a 
+        mat-list-item 
+        *ngFor="let item of navigationItems"
+        [routerLink]="item.route"
+        routerLinkActive="active-nav-item"
+        [routerLinkActiveOptions]="{exact: item.route === '/admin'}"
+        (click)="drawer.close()">
+        <mat-icon matListItemIcon [matBadge]="item.badge" [matBadgeHidden]="!item.badge" matBadgeColor="accent">
+          {{ item.icon }}
+        </mat-icon>
+        <span matListItemTitle>{{ item.label }}</span>
+      </a>
+    </mat-nav-list>
+
+    <!-- Sidebar Footer -->
+    <div class="sidenav-footer">
+      <button mat-stroked-button class="public-site-btn" (click)="onViewPublicSite()">
+        <mat-icon>open_in_new</mat-icon>
+        View Public Site
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Top Toolbar -->
+    <mat-toolbar color="primary" class="toolbar">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">Referral Dashboard</span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <!-- User Menu -->
+      <div class="user-menu" *ngIf="currentUser$ | async as user">
+        <span class="greeting">{{ getGreeting() }}, {{ user.username }}!</span>
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>person</mat-icon>
+            <span>{{ user.email }}</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="onViewPublicSite()">
+            <mat-icon>open_in_new</mat-icon>
+            <span>View Public Site</span>
+          </button>
+          <button mat-menu-item (click)="onLogout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      <!-- Welcome Section -->
+      <div class="welcome-section" *ngIf="currentUser$ | async as user">
+        <h1 class="welcome-title">{{ getGreeting() }}, {{ user.username }}!</h1>
+        <p class="welcome-subtitle">Manage your referral offers and track performance</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid" *ngIf="stats$ | async as stats">
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-content">
+              <div class="stat-icon categories">
+                <mat-icon>category</mat-icon>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">{{ stats.activeCategories }}/{{ stats.totalCategories }}</div>
+                <div class="stat-label">Active Categories</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-content">
+              <div class="stat-icon offers">
+                <mat-icon>local_offer</mat-icon>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">{{ stats.activeOffers }}/{{ stats.totalOffers }}</div>
+                <div class="stat-label">Active Offers</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-content">
+              <div class="stat-icon clicks">
+                <mat-icon>visibility</mat-icon>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">{{ formatNumber(stats.totalClicks) }}</div>
+                <div class="stat-label">Total Clicks</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <div class="stat-content">
+              <div class="stat-icon performance">
+                <mat-icon>trending_up</mat-icon>
+              </div>
+              <div class="stat-info">
+                <div class="stat-number">{{ stats.totalClicks > 0 ? (stats.totalClicks / stats.activeOffers).toFixed(1) : '0' }}</div>
+                <div class="stat-label">Avg Clicks/Offer</div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="actions-grid">
+          <mat-card class="action-card" (click)="onNavigate('/admin/categories')">
+            <mat-card-content>
+              <mat-icon class="action-icon">add_circle</mat-icon>
+              <h3>Add Category</h3>
+              <p>Create a new referral category</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="action-card" (click)="onNavigate('/admin/offers')">
+            <mat-card-content>
+              <mat-icon class="action-icon">local_offer</mat-icon>
+              <h3>Add Offer</h3>
+              <p>Create a new referral offer</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="action-card" (click)="onNavigate('/admin/utilities')">
+            <mat-card-content>
+              <mat-icon class="action-icon">build</mat-icon>
+              <h3>Utilities</h3>
+              <p>Access admin tools and utilities</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="action-card" (click)="onViewPublicSite()">
+            <mat-card-content>
+              <mat-icon class="action-icon">open_in_new</mat-icon>
+              <h3>View Site</h3>
+              <p>Preview the public website</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
