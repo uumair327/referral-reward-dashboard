@@ -1,0 +1,314 @@
+<div class="offer-management-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>Offer Management</h1>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="showAddForm()">
+        <mat-icon>add</mat-icon>
+        Add Offer
+      </button>
+      
+      <!-- Bulk Actions Menu -->
+      <button 
+        mat-stroked-button 
+        [matMenuTriggerFor]="bulkMenu"
+        [disabled]="selectedOffers.size === 0">
+        <mat-icon>more_vert</mat-icon>
+        Bulk Actions ({{ selectedOffers.size }})
+      </button>
+      <mat-menu #bulkMenu="matMenu">
+        <button mat-menu-item (click)="bulkActivate()">
+          <mat-icon>visibility</mat-icon>
+          Activate Selected
+        </button>
+        <button mat-menu-item (click)="bulkDeactivate()">
+          <mat-icon>visibility_off</mat-icon>
+          Deactivate Selected
+        </button>
+        <button mat-menu-item (click)="bulkDelete()" class="warn-action">
+          <mat-icon>delete</mat-icon>
+          Delete Selected
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <div class="filters-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Search offers</mat-label>
+          <input 
+            matInput 
+            [(ngModel)]="searchTerm" 
+            (ngModelChange)="onSearchChange()"
+            placeholder="Search by title, description, or code...">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="category-field">
+          <mat-label>Category</mat-label>
+          <mat-select 
+            [(ngModel)]="selectedCategoryId" 
+            (ngModelChange)="onCategoryChange()">
+            <mat-option value="">All Categories</mat-option>
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              <mat-icon>{{ category.icon }}</mat-icon>
+              {{ category.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-slide-toggle 
+          [(ngModel)]="showActiveOnly" 
+          (ngModelChange)="onFilterChange()"
+          class="active-filter">
+          Show active only
+        </mat-slide-toggle>
+
+        <button mat-icon-button (click)="refreshOffers()" [disabled]="loading">
+          <mat-icon [class.spinning]="loading">refresh</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Add/Edit Form -->
+  <mat-card *ngIf="showForm" class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        {{ editingOffer ? 'Edit Offer' : 'Add New Offer' }}
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="offerForm" (ngSubmit)="saveOffer()">
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Offer Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter offer title">
+            <mat-error>{{ getFormErrorMessage('title') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="categoryId">
+              <mat-option *ngFor="let category of categories" [value]="category.id">
+                <mat-icon>{{ category.icon }}</mat-icon>
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getFormErrorMessage('categoryId') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea 
+            matInput 
+            formControlName="description" 
+            rows="4"
+            placeholder="Enter offer description">
+          </textarea>
+          <mat-error>{{ getFormErrorMessage('description') }}</mat-error>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Referral Link</mat-label>
+            <input matInput formControlName="referralLink" placeholder="https://example.com/ref/123">
+            <mat-error>{{ getFormErrorMessage('referralLink') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Referral Code (Optional)</mat-label>
+            <input matInput formControlName="referralCode" placeholder="REF123">
+            <mat-error>{{ getFormErrorMessage('referralCode') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-slide-toggle formControlName="isActive" class="active-toggle">
+          Active
+        </mat-slide-toggle>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="cancelEdit()" [disabled]="saving">
+        Cancel
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="saveOffer()" 
+        [disabled]="saving || offerForm.invalid">
+        <mat-icon *ngIf="saving">hourglass_empty</mat-icon>
+        {{ editingOffer ? 'Update' : 'Create' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Offers Table -->
+  <mat-card class="table-card">
+    <div class="table-container">
+      <table mat-table [dataSource]="offers" matSort (matSortChange)="onSortChange($event)">
+        
+        <!-- Selection Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox 
+              [checked]="isAllSelected()"
+              [indeterminate]="isIndeterminate()"
+              (change)="toggleAllSelection()"
+              [attr.aria-label]="'Select all offers'">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let offer">
+            <mat-checkbox 
+              [checked]="isOfferSelected(offer.id)"
+              (change)="toggleOfferSelection(offer.id)"
+              [attr.aria-label]="'Select ' + offer.title">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
+          <td mat-cell *matCellDef="let offer">
+            <div class="offer-title">
+              <div class="title-text">{{ offer.title }}</div>
+              <div class="category-chip">
+                <mat-icon class="category-icon">{{ getCategoryIcon(offer.categoryId) }}</mat-icon>
+                {{ getCategoryName(offer.categoryId) }}
+              </div>
+              <mat-chip *ngIf="!offer.isActive" class="inactive-chip">Inactive</mat-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Referral Code Column -->
+        <ng-container matColumnDef="referralCode">
+          <th mat-header-cell *matHeaderCellDef>Code</th>
+          <td mat-cell *matCellDef="let offer">
+            <div *ngIf="offer.referralCode" class="referral-code">
+              <mat-chip 
+                class="code-chip"
+                (click)="copyReferralCode(offer.referralCode)"
+                [attr.aria-label]="'Copy referral code ' + offer.referralCode">
+                <mat-icon matChipTrailingIcon>content_copy</mat-icon>
+                {{ offer.referralCode }}
+              </mat-chip>
+            </div>
+            <span *ngIf="!offer.referralCode" class="no-code">—</span>
+          </td>
+        </ng-container>
+
+        <!-- Referral Link Column -->
+        <ng-container matColumnDef="referralLink">
+          <th mat-header-cell *matHeaderCellDef>Link</th>
+          <td mat-cell *matCellDef="let offer">
+            <button 
+              mat-icon-button 
+              (click)="openOfferLink(offer)"
+              [attr.aria-label]="'Open ' + offer.title + ' referral link'">
+              <mat-icon>open_in_new</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Click Count Column -->
+        <ng-container matColumnDef="clickCount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Clicks</th>
+          <td mat-cell *matCellDef="let offer">
+            <div class="click-count">
+              <mat-icon class="count-icon">visibility</mat-icon>
+              {{ offer.clickCount || 0 }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Active Status Column -->
+        <ng-container matColumnDef="isActive">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let offer">
+            <mat-slide-toggle 
+              [checked]="offer.isActive"
+              (change)="toggleOfferStatus(offer)"
+              [attr.aria-label]="'Toggle ' + offer.title + ' status'">
+            </mat-slide-toggle>
+          </td>
+        </ng-container>
+
+        <!-- Updated Date Column -->
+        <ng-container matColumnDef="updatedAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Updated</th>
+          <td mat-cell *matCellDef="let offer">
+            <div class="updated-date">{{ formatDate(offer.updatedAt) }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let offer">
+            <div class="action-buttons">
+              <button 
+                mat-icon-button 
+                (click)="editOffer(offer)"
+                [attr.aria-label]="'Edit ' + offer.title">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button 
+                mat-icon-button 
+                color="warn"
+                (click)="deleteOffer(offer)"
+                [attr.aria-label]="'Delete ' + offer.title">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+            [class.inactive-row]="!row.isActive"></tr>
+      </table>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-overlay">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading offers...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="offers.length === 0 && !loading" class="empty-state">
+        <mat-icon class="empty-icon">local_offer</mat-icon>
+        <h3>No offers found</h3>
+        <p *ngIf="searchTerm || selectedCategoryId || showActiveOnly; else noDataTemplate">
+          Try adjusting your search or filter criteria.
+        </p>
+        <ng-template #noDataTemplate>
+          <p>Get started by adding your first referral offer.</p>
+        </ng-template>
+        <button mat-raised-button color="primary" (click)="showAddForm()">
+          <mat-icon>add</mat-icon>
+          Add Offer
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator 
+      *ngIf="offers.length"
+      [length]="totalItems"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="Select page of offers">
+    </mat-paginator>
+  </mat-card>
+</div>

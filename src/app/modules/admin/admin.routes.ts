@@ -39,6 +39,10 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('./components/category-management/category-management.component').then(c => c.CategoryManagementComponent)
       },
       {
+        path: 'offers',
+        loadComponent: () => import('./components/offer-management/offer-management.component').then(c => c.OfferManagementComponent)
+      },
+      {
         path: 'utilities',
         component: PlaceholderUtilitiesComponent
       }
