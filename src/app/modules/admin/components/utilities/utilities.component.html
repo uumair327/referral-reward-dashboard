@@ -1,0 +1,351 @@
+<div class="utilities-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>Admin Utilities</h1>
+    <p class="subtitle">Tools to help manage and validate your referral content</p>
+  </div>
+
+  <!-- Utility Tabs -->
+  <mat-tab-group class="utilities-tabs">
+    
+    <!-- Link Validation Tab -->
+    <mat-tab label="Link Validation">
+      <div class="tab-content">
+        <mat-card class="utility-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>link</mat-icon>
+              Link Validation Tool
+            </mat-card-title>
+            <mat-card-subtitle>
+              Validate referral links to ensure they are accessible and working properly
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <form [formGroup]="linkValidationForm">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>URLs to Validate</mat-label>
+                <textarea 
+                  matInput 
+                  formControlName="urls"
+                  rows="6"
+                  placeholder="Enter URLs (one per line)&#10;https://example.com/ref/123&#10;https://another-site.com/referral/456">
+                </textarea>
+                <mat-hint>Enter one URL per line</mat-hint>
+              </mat-form-field>
+            </form>
+
+            <div class="action-buttons">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="validateLinks()"
+                [disabled]="validatingLinks || linkValidationForm.invalid">
+                <mat-icon *ngIf="validatingLinks">hourglass_empty</mat-icon>
+                <mat-icon *ngIf="!validatingLinks">check_circle</mat-icon>
+                {{ validatingLinks ? 'Validating...' : 'Validate Links' }}
+              </button>
+
+              <button 
+                mat-button 
+                (click)="clearValidationResults()"
+                [disabled]="validationResults.length === 0">
+                <mat-icon>clear</mat-icon>
+                Clear Results
+              </button>
+
+              <button 
+                mat-button 
+                (click)="exportValidationResults()"
+                [disabled]="validationResults.length === 0">
+                <mat-icon>download</mat-icon>
+                Export CSV
+              </button>
+            </div>
+
+            <!-- Validation Results -->
+            <div *ngIf="validationResults.length > 0" class="results-section">
+              <h3>Validation Results</h3>
+              <div class="results-summary">
+                <mat-chip-set>
+                  <mat-chip class="success-chip">
+                    <mat-icon matChipAvatar>check_circle</mat-icon>
+                    {{ getValidResultsCount() }} Valid
+                  </mat-chip>
+                  <mat-chip class="error-chip">
+                    <mat-icon matChipAvatar>error</mat-icon>
+                    {{ getInvalidResultsCount() }} Invalid
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+
+              <table mat-table [dataSource]="validationResults" class="results-table">
+                <ng-container matColumnDef="url">
+                  <th mat-header-cell *matHeaderCellDef>URL</th>
+                  <td mat-cell *matCellDef="let result">
+                    <div class="url-cell">
+                      <a [href]="result.url" target="_blank" rel="noopener">{{ result.url }}</a>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let result">
+                    <div class="status-cell">
+                      <mat-icon [class]="result.isValid ? 'success-icon' : 'error-icon'">
+                        {{ result.isValid ? 'check_circle' : 'error' }}
+                      </mat-icon>
+                      <span>{{ result.isValid ? 'Valid' : 'Invalid' }}</span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="details">
+                  <th mat-header-cell *matHeaderCellDef>Details</th>
+                  <td mat-cell *matCellDef="let result">
+                    <div class="details-cell">
+                      <span *ngIf="result.status">Status: {{ result.status }}</span>
+                      <span *ngIf="result.error" class="error-text">{{ result.error }}</span>
+                      <span *ngIf="result.responseTime" class="response-time">{{ result.responseTime }}ms</span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['url', 'status', 'details']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['url', 'status', 'details']"></tr>
+              </table>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Code Generation Tab -->
+    <mat-tab label="Code Generation">
+      <div class="tab-content">
+        <mat-card class="utility-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>code</mat-icon>
+              Referral Code Generator
+            </mat-card-title>
+            <mat-card-subtitle>
+              Generate unique referral codes with customizable patterns
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <form [formGroup]="codeGenerationForm">
+              <div class="form-row">
+                <mat-form-field appearance="outline">
+                  <mat-label>Number of Codes</mat-label>
+                  <input matInput type="number" formControlName="count" min="1" max="100">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Category (Optional)</mat-label>
+                  <mat-select formControlName="categoryId">
+                    <mat-option value="">No Category</mat-option>
+                    <mat-option *ngFor="let category of categories" [value]="category.id">
+                      <mat-icon>{{ category.icon }}</mat-icon>
+                      {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Custom Pattern (Optional)</mat-label>
+                <input matInput formControlName="customPattern" placeholder="e.g., REF-XXX-999 (X=letter, 9=number, *=any)">
+                <mat-hint>Use X for letters, 9 for numbers, * for any character</mat-hint>
+              </mat-form-field>
+
+              <!-- Code Options -->
+              <div class="code-options">
+                <h4>Generation Options</h4>
+                <div class="options-grid">
+                  <div class="option-item">
+                    <label>Length:</label>
+                    <mat-slider min="4" max="20" step="1" [(ngModel)]="codeOptions.length">
+                      <input matSliderThumb [(ngModel)]="codeOptions.length">
+                    </mat-slider>
+                    <span class="option-value">{{ codeOptions.length }}</span>
+                  </div>
+
+                  <div class="option-item">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Prefix</mat-label>
+                      <input matInput [(ngModel)]="codeOptions.prefix" placeholder="e.g., REF">
+                    </mat-form-field>
+                  </div>
+
+                  <div class="option-item">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Suffix</mat-label>
+                      <input matInput [(ngModel)]="codeOptions.suffix" placeholder="e.g., 2024">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="action-buttons">
+              <button 
+                mat-raised-button 
+                color="primary" 
+                (click)="generateCodes()"
+                [disabled]="codeGenerationForm.invalid">
+                <mat-icon>auto_fix_high</mat-icon>
+                Generate Codes
+              </button>
+
+              <button 
+                mat-button 
+                (click)="copyAllCodes()"
+                [disabled]="generatedCodes.length === 0">
+                <mat-icon>content_copy</mat-icon>
+                Copy All
+              </button>
+
+              <button 
+                mat-button 
+                (click)="clearGeneratedCodes()"
+                [disabled]="generatedCodes.length === 0">
+                <mat-icon>clear</mat-icon>
+                Clear
+              </button>
+            </div>
+
+            <!-- Generated Codes -->
+            <div *ngIf="generatedCodes.length > 0" class="codes-section">
+              <h3>Generated Codes</h3>
+              <div class="codes-grid">
+                <mat-chip-set>
+                  <mat-chip 
+                    *ngFor="let code of generatedCodes" 
+                    class="code-chip"
+                    (click)="copyCode(code)">
+                    <mat-icon matChipTrailingIcon>content_copy</mat-icon>
+                    {{ code }}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Content Preview Tab -->
+    <mat-tab label="Content Preview">
+      <div class="tab-content">
+        <mat-card class="utility-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>preview</mat-icon>
+              Content Preview Tool
+            </mat-card-title>
+            <mat-card-subtitle>
+              Preview how your offers will appear on different devices
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <form [formGroup]="previewForm">
+              <div class="preview-controls">
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Offer</mat-label>
+                  <mat-select formControlName="offerId" (selectionChange)="loadOfferPreview()">
+                    <mat-option *ngFor="let offer of offers" [value]="offer.id">
+                      {{ offer.title }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <div class="device-selector">
+                  <button 
+                    mat-button 
+                    [class.active]="previewDeviceType === 'desktop'"
+                    (click)="changePreviewDevice('desktop')">
+                    <mat-icon>desktop_windows</mat-icon>
+                    Desktop
+                  </button>
+                  <button 
+                    mat-button 
+                    [class.active]="previewDeviceType === 'tablet'"
+                    (click)="changePreviewDevice('tablet')">
+                    <mat-icon>tablet</mat-icon>
+                    Tablet
+                  </button>
+                  <button 
+                    mat-button 
+                    [class.active]="previewDeviceType === 'mobile'"
+                    (click)="changePreviewDevice('mobile')">
+                    <mat-icon>phone_android</mat-icon>
+                    Mobile
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Preview Frame -->
+            <div class="preview-section" *ngIf="selectedOffer">
+              <div class="preview-frame" [ngClass]="getPreviewFrameClass()">
+                <div class="preview-content">
+                  <!-- Simulated offer card preview -->
+                  <div class="offer-preview-card">
+                    <div class="offer-header">
+                      <div class="category-info" *ngIf="getCategoryForOffer(selectedOffer.categoryId) as category">
+                        <mat-icon class="category-icon">{{ category.icon }}</mat-icon>
+                        <span class="category-name">{{ category.name }}</span>
+                      </div>
+                    </div>
+                    
+                    <div class="offer-content">
+                      <h3 class="offer-title">{{ selectedOffer.title }}</h3>
+                      <div class="offer-description" [innerHTML]="selectedOffer.description"></div>
+                      
+                      <div class="offer-code" *ngIf="selectedOffer.referralCode">
+                        <mat-chip class="code-chip">
+                          <mat-icon matChipTrailingIcon>content_copy</mat-icon>
+                          {{ selectedOffer.referralCode }}
+                        </mat-chip>
+                      </div>
+                      
+                      <div class="offer-stats" *ngIf="selectedOffer.clickCount">
+                        <mat-icon class="stats-icon">visibility</mat-icon>
+                        <span>{{ selectedOffer.clickCount }} clicks</span>
+                      </div>
+                    </div>
+                    
+                    <div class="offer-actions">
+                      <button mat-raised-button color="primary">
+                        <mat-icon>open_in_new</mat-icon>
+                        Get Offer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="preview-info">
+                <p><strong>Device:</strong> {{ previewDeviceType | titlecase }}</p>
+                <p><strong>Offer:</strong> {{ selectedOffer.title }}</p>
+                <p><strong>Category:</strong> {{ getCategoryForOffer(selectedOffer.categoryId)?.name }}</p>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="!selectedOffer" class="empty-preview">
+              <mat-icon>preview</mat-icon>
+              <p>Select an offer to see how it will appear to users</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>

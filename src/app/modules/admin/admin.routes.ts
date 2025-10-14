@@ -44,7 +44,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'utilities',
-        component: PlaceholderUtilitiesComponent
+        loadComponent: () => import('./components/utilities/utilities.component').then(c => c.UtilitiesComponent)
       }
     ]
   }
