@@ -196,7 +196,7 @@ export class RichTextEditorComponent implements OnInit, OnDestroy, ControlValueA
   }
 
   // ControlValueAccessor implementation
-  writeValue(value: string): void {
+  writeValue(value: string | null | undefined): void {
     this.content = value || '';
     if (this.editorRef) {
       this.editorRef.nativeElement.innerHTML = this.content;

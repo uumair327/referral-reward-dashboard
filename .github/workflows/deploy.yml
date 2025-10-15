@@ -51,8 +51,6 @@ jobs:
         
     - name: 🔧 Setup Pages
       uses: actions/configure-pages@v4
-      with:
-        enablement: true
       
     - name: 📤 Upload to GitHub Pages
       uses: actions/upload-pages-artifact@v3
