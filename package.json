@@ -20,8 +20,7 @@
     "cypress:run": "cypress run",
     "analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/referral-reward-dashboard/browser/stats.json",
     "deploy:github-pages": "npm run build:github-pages",
-    "precommit": "npm run lint && npm run test:ci",
-    "postinstall": "ngcc"
+    "precommit": "npm run lint && npm run test:ci"
   },
   "prettier": {
     "printWidth": 100,

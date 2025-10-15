@@ -37,9 +37,11 @@ A modern, responsive Angular application for discovering and managing referral o
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** v18+ 
-- **npm** v9+
-- **Angular CLI** v18+
+- **Node.js** v20+ (required for Angular 20)
+- **npm** v10+
+- **Angular CLI** v20+
+
+> ⚠️ **Important**: This project uses Angular 20 which requires Node.js 20+. See [NODE_COMPATIBILITY.md](NODE_COMPATIBILITY.md) for version details.
 
 ### Installation
 
