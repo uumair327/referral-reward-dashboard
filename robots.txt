@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yourusername.github.io/referral-reward-dashboard/sitemap.xml
+
+# Disallow admin pages from search engines
+Disallow: /admin/
+Disallow: /admin/*
+
+# Allow all other pages
+Allow: /
+Allow: /category/
+Allow: /category/*

@@ -1,0 +1,148 @@
+{
+  "configVersion": 1,
+  "timestamp": 1760504784268,
+  "index": "/referral-reward-dashboard/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/referral-reward-dashboard/chunk-2DFMDFTH.js",
+        "/referral-reward-dashboard/chunk-347WKLGE.js",
+        "/referral-reward-dashboard/chunk-3DL5UBSW.js",
+        "/referral-reward-dashboard/chunk-3L5WXJ2P.js",
+        "/referral-reward-dashboard/chunk-3ZQEGT5D.js",
+        "/referral-reward-dashboard/chunk-5FVWXJNG.js",
+        "/referral-reward-dashboard/chunk-5LZ43AQJ.js",
+        "/referral-reward-dashboard/chunk-6FAHMFIB.js",
+        "/referral-reward-dashboard/chunk-7CGTOI24.js",
+        "/referral-reward-dashboard/chunk-7GRVYKBV.js",
+        "/referral-reward-dashboard/chunk-7ZLXLM7V.js",
+        "/referral-reward-dashboard/chunk-AP533UBU.js",
+        "/referral-reward-dashboard/chunk-BNOJGNQL.js",
+        "/referral-reward-dashboard/chunk-BWZ2UAYS.js",
+        "/referral-reward-dashboard/chunk-HMYTSN73.js",
+        "/referral-reward-dashboard/chunk-JLEVF76D.js",
+        "/referral-reward-dashboard/chunk-JLQS2FXZ.js",
+        "/referral-reward-dashboard/chunk-KJUX7SLI.js",
+        "/referral-reward-dashboard/chunk-L7LBR5TI.js",
+        "/referral-reward-dashboard/chunk-NFMXNIAH.js",
+        "/referral-reward-dashboard/chunk-NFPOLWJE.js",
+        "/referral-reward-dashboard/chunk-OF5WNUAR.js",
+        "/referral-reward-dashboard/chunk-P3KR4VEM.js",
+        "/referral-reward-dashboard/chunk-REIPX5TG.js",
+        "/referral-reward-dashboard/chunk-RQYI5VJN.js",
+        "/referral-reward-dashboard/chunk-RW4EGM7U.js",
+        "/referral-reward-dashboard/chunk-TXZFNDAN.js",
+        "/referral-reward-dashboard/chunk-UL7CW2R5.js",
+        "/referral-reward-dashboard/chunk-VCTHQUAT.js",
+        "/referral-reward-dashboard/chunk-ZMPJ6RVL.js",
+        "/referral-reward-dashboard/favicon.ico",
+        "/referral-reward-dashboard/index.html",
+        "/referral-reward-dashboard/main-6SDVJ2VB.js",
+        "/referral-reward-dashboard/manifest.webmanifest",
+        "/referral-reward-dashboard/styles-DPMYSQRN.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-performance",
+      "patterns": [
+        "\\/api\\/.*"
+      ],
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    },
+    {
+      "name": "api-freshness",
+      "patterns": [
+        "\\/api\\/.*"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 3600000,
+      "timeoutMs": 10000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/referral-reward-dashboard/chunk-2DFMDFTH.js": "cea6f80c6e61827872885553ffb1a8cb90e7d9be",
+    "/referral-reward-dashboard/chunk-347WKLGE.js": "f9d8178740056170895cc1af0395a29b313d3034",
+    "/referral-reward-dashboard/chunk-3DL5UBSW.js": "667f14a30393da5c9fa717bc52a4874cab1014bf",
+    "/referral-reward-dashboard/chunk-3L5WXJ2P.js": "07e01c68d3187d13318b02ff6c6f2eca6282c330",
+    "/referral-reward-dashboard/chunk-3ZQEGT5D.js": "a6c690b77f6ed5342b76a26b8bb78716871bb6fb",
+    "/referral-reward-dashboard/chunk-5FVWXJNG.js": "b57a34b49d0ce8ee555ad2ca3038112255a8d441",
+    "/referral-reward-dashboard/chunk-5LZ43AQJ.js": "c5f8dff98338398175210fb0bd84d4e1d965b3d0",
+    "/referral-reward-dashboard/chunk-6FAHMFIB.js": "21f0ec5ef1fa2d3da5bc4dfdefab439535d77cf9",
+    "/referral-reward-dashboard/chunk-7CGTOI24.js": "954b4bf8780b6c8d5e5f27a66127bb5e575b53dd",
+    "/referral-reward-dashboard/chunk-7GRVYKBV.js": "ad657c90f896ece6249e76163ab0d0d34766eaeb",
+    "/referral-reward-dashboard/chunk-7ZLXLM7V.js": "665b4dd03583e7f70beccaaf73028e70e532f1dd",
+    "/referral-reward-dashboard/chunk-AP533UBU.js": "2cdd80807c40413f6d434abf30f1b86082663835",
+    "/referral-reward-dashboard/chunk-BNOJGNQL.js": "0ca18d980f97a82a07cc7c5106f1195f23db2d13",
+    "/referral-reward-dashboard/chunk-BWZ2UAYS.js": "cfdd1454cee390dd5325ac991d82c4dd01a6281f",
+    "/referral-reward-dashboard/chunk-HMYTSN73.js": "35b9c0cbeddbe5a0281fb1f30febcb447c58cdcb",
+    "/referral-reward-dashboard/chunk-JLEVF76D.js": "539171a9c4aec90dcda970be335a05eae2ae8733",
+    "/referral-reward-dashboard/chunk-JLQS2FXZ.js": "f2b68505e08f362bd3d88d11f01cefa7c45dd0fb",
+    "/referral-reward-dashboard/chunk-KJUX7SLI.js": "0c298ceb9b0d994a75a1fd1b2ac2f8fdb5efdd30",
+    "/referral-reward-dashboard/chunk-L7LBR5TI.js": "ff7dbfa9cac7a0694d850fa39f5fd2815df1986e",
+    "/referral-reward-dashboard/chunk-NFMXNIAH.js": "e918d835668ac665336a3b48929a2ee3f945c75d",
+    "/referral-reward-dashboard/chunk-NFPOLWJE.js": "a47a116a12b2613c3e2cbf89986c35e663502937",
+    "/referral-reward-dashboard/chunk-OF5WNUAR.js": "2f251e98da8a3c4209a02150d67d29b85a1f777c",
+    "/referral-reward-dashboard/chunk-P3KR4VEM.js": "a474e41f8c020a9f5024f0c6732cbda82c7208bb",
+    "/referral-reward-dashboard/chunk-REIPX5TG.js": "b3492b1dda49c25f4bd0f5892dc9d50e26c8a593",
+    "/referral-reward-dashboard/chunk-RQYI5VJN.js": "1a548d290b13b6d7846355f87a85d1a61ec7e56b",
+    "/referral-reward-dashboard/chunk-RW4EGM7U.js": "55e14795122cd74e20190a367d9c391eada59d16",
+    "/referral-reward-dashboard/chunk-TXZFNDAN.js": "8218df7bc43b6d1b278713adc840f96e37baafe5",
+    "/referral-reward-dashboard/chunk-UL7CW2R5.js": "4f4d8342171fedc48079d8224ee8fcc2bad5ccbb",
+    "/referral-reward-dashboard/chunk-VCTHQUAT.js": "693efbb62a3e7ccf80689985e9f01c6b9cac2329",
+    "/referral-reward-dashboard/chunk-ZMPJ6RVL.js": "136f575f580a23f55d03e872f47405cee3b87865",
+    "/referral-reward-dashboard/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/referral-reward-dashboard/index.html": "b48653ba28ed1c823aa83e724482f1cb4cc90eef",
+    "/referral-reward-dashboard/main-6SDVJ2VB.js": "5dc24d49a5d9db5ea53d015bdfce9a0acdc06712",
+    "/referral-reward-dashboard/manifest.webmanifest": "ed9fc6ec9cd480e3f4f90a5bc566302715dee13f",
+    "/referral-reward-dashboard/styles-DPMYSQRN.css": "59f6ed7bcf03606a64c47c9670a7e59934e42271"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
