@@ -2,7 +2,11 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  min-height: 100vh;
+  background: white;
+  border-radius: 12px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .loading-container {
@@ -285,6 +289,41 @@
     
     &:hover {
       transform: none;
+    }
+  }
+}
+.f
+ooter-section {
+  margin-top: 3rem;
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+  
+  .admin-access {
+    .admin-login-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      border-radius: 24px;
+      padding: 0.5rem 1.5rem;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: rgba(255, 193, 7, 0.1);
+        transform: translateY(-2px);
+      }
+      
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+      
+      @media (max-width: 480px) {
+        font-size: 0.9rem;
+        padding: 0.4rem 1.2rem;
+      }
     }
   }
 }

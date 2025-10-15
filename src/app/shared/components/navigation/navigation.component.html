@@ -1,0 +1,251 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Mobile Sidenav -->
+  <mat-sidenav 
+    #drawer 
+    class="sidenav" 
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false || sidenavOpened"
+    (closed)="closeSidenav()">
+    
+    <mat-toolbar class="sidenav-header">
+      <span class="logo">
+        <mat-icon>card_giftcard</mat-icon>
+        Referral Hub
+      </span>
+    </mat-toolbar>
+    
+    <div class="sidenav-content">
+      <!-- Public Navigation -->
+      <div class="nav-section">
+        <h3 class="nav-section-title">Browse</h3>
+        <a 
+          mat-button 
+          routerLink="/" 
+          class="nav-link"
+          [class.active]="isRouteActive('/')"
+          (click)="closeSidenav()">
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/category/demat-account" 
+          class="nav-link"
+          [class.active]="isRouteActive('/category/demat-account')"
+          (click)="closeSidenav()">
+          <mat-icon>account_balance</mat-icon>
+          <span>Demat Account</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/category/medical-app" 
+          class="nav-link"
+          [class.active]="isRouteActive('/category/medical-app')"
+          (click)="closeSidenav()">
+          <mat-icon>medical_services</mat-icon>
+          <span>Medical Apps</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/category/hospitality-hotel" 
+          class="nav-link"
+          [class.active]="isRouteActive('/category/hospitality-hotel')"
+          (click)="closeSidenav()">
+          <mat-icon>hotel</mat-icon>
+          <span>Hotels</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/category/entertainment" 
+          class="nav-link"
+          [class.active]="isRouteActive('/category/entertainment')"
+          (click)="closeSidenav()">
+          <mat-icon>movie</mat-icon>
+          <span>Entertainment</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/category/online-products" 
+          class="nav-link"
+          [class.active]="isRouteActive('/category/online-products')"
+          (click)="closeSidenav()">
+          <mat-icon>shopping_cart</mat-icon>
+          <span>Online Products</span>
+        </a>
+      </div>
+
+      <!-- Admin Navigation -->
+      <div class="nav-section" *ngIf="isAdmin$ | async">
+        <h3 class="nav-section-title">Admin</h3>
+        <a 
+          mat-button 
+          routerLink="/admin/dashboard" 
+          class="nav-link"
+          [class.active]="isRouteActive('/admin/dashboard')"
+          (click)="closeSidenav()">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/admin/categories" 
+          class="nav-link"
+          [class.active]="isRouteActive('/admin/categories')"
+          (click)="closeSidenav()">
+          <mat-icon>category</mat-icon>
+          <span>Categories</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/admin/offers" 
+          class="nav-link"
+          [class.active]="isRouteActive('/admin/offers')"
+          (click)="closeSidenav()">
+          <mat-icon>local_offer</mat-icon>
+          <span>Offers</span>
+        </a>
+        <a 
+          mat-button 
+          routerLink="/admin/utilities" 
+          class="nav-link"
+          [class.active]="isRouteActive('/admin/utilities')"
+          (click)="closeSidenav()">
+          <mat-icon>build</mat-icon>
+          <span>Utilities</span>
+        </a>
+      </div>
+
+      <!-- Auth Section -->
+      <div class="nav-section auth-section">
+        <div *ngIf="!(isAdmin$ | async); else logoutSection">
+          <a 
+            mat-raised-button 
+            color="accent"
+            routerLink="/admin"
+            class="auth-button"
+            (click)="closeSidenav()">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Admin Login</span>
+          </a>
+        </div>
+        <ng-template #logoutSection>
+          <button 
+            mat-stroked-button 
+            color="warn"
+            class="auth-button"
+            (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="main-content">
+    <!-- Top Toolbar -->
+    <mat-toolbar color="primary" class="top-toolbar">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="toggleSidenav()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      
+      <!-- Desktop Logo -->
+      <div class="desktop-logo" *ngIf="!(isHandset$ | async)" (click)="navigateHome()">
+        <mat-icon>card_giftcard</mat-icon>
+        <span>Referral & Rewards Hub</span>
+      </div>
+
+      <!-- Mobile Logo -->
+      <div class="mobile-logo" *ngIf="isHandset$ | async" (click)="navigateHome()">
+        <mat-icon>card_giftcard</mat-icon>
+        <span>Referral Hub</span>
+      </div>
+
+      <span class="spacer"></span>
+
+      <!-- Desktop Navigation -->
+      <div class="desktop-nav" *ngIf="!(isHandset$ | async)">
+        <button 
+          mat-button 
+          routerLink="/"
+          [class.active]="isRouteActive('/')">
+          <mat-icon>home</mat-icon>
+          Home
+        </button>
+        
+        <div *ngIf="isAdmin$ | async; else guestNav">
+          <button 
+            mat-button 
+            routerLink="/admin/dashboard"
+            [class.active]="isRouteActive('/admin')">
+            <mat-icon>dashboard</mat-icon>
+            Admin
+          </button>
+          <button 
+            mat-button 
+            color="warn"
+            (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Logout
+          </button>
+        </div>
+        
+        <ng-template #guestNav>
+          <button 
+            mat-raised-button 
+            color="accent"
+            routerLink="/admin">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Admin
+          </button>
+        </ng-template>
+      </div>
+    </mat-toolbar>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <ng-content></ng-content>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Referral & Rewards Hub</h4>
+          <p>Discover the best referral offers and earn rewards across multiple platforms.</p>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <a routerLink="/" class="footer-link">Home</a>
+          <a routerLink="/category/demat-account" class="footer-link">Demat Accounts</a>
+          <a routerLink="/category/medical-app" class="footer-link">Medical Apps</a>
+          <a routerLink="/category/entertainment" class="footer-link">Entertainment</a>
+        </div>
+        
+        <div class="footer-section">
+          <h4>Categories</h4>
+          <a routerLink="/category/hospitality-hotel" class="footer-link">Hotels & Travel</a>
+          <a routerLink="/category/online-products" class="footer-link">Online Shopping</a>
+        </div>
+        
+        <div class="footer-section" *ngIf="!(isAdmin$ | async)">
+          <h4>Admin</h4>
+          <a routerLink="/admin" class="footer-link">Admin Login</a>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2024 Referral & Rewards Hub. Built with Angular & Material Design.</p>
+      </div>
+    </footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "title": "Chase Sapphire Preferred",
+    "description": "Earn 60,000 bonus points after spending $4,000 in first 3 months",
+    "referralLink": "https://example.com/chase-sapphire",
+    "referralCode": "CHASE60K",
+    "categoryId": "1",
+    "categoryName": "Finance & Banking",
+    "isActive": true,
+    "clickCount": 245,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "title": "Airbnb Host Referral",
+    "description": "Get $100 credit when you become a new host",
+    "referralLink": "https://example.com/airbnb-host",
+    "referralCode": "AIRBNB100",
+    "categoryId": "2",
+    "categoryName": "Travel & Hotels",
+    "isActive": true,
+    "clickCount": 89,
+    "createdAt": "2024-01-02T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "title": "Amazon Prime Membership",
+    "description": "Get 30 days free trial of Amazon Prime",
+    "referralLink": "https://example.com/amazon-prime",
+    "referralCode": "PRIME30",
+    "categoryId": "3",
+    "categoryName": "Shopping & Retail",
+    "isActive": true,
+    "clickCount": 567,
+    "createdAt": "2024-01-03T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "title": "Dropbox Plus",
+    "description": "Get extra storage space with Dropbox Plus referral",
+    "referralLink": "https://example.com/dropbox-plus",
+    "referralCode": "DROPBOX2TB",
+    "categoryId": "4",
+    "categoryName": "Technology",
+    "isActive": false,
+    "clickCount": 34,
+    "createdAt": "2024-01-04T00:00:00Z"
+  }
+]

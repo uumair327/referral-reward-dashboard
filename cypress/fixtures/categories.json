@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "Finance & Banking",
+    "description": "Credit cards, banking, and financial services",
+    "icon": "account_balance",
+    "isActive": true,
+    "offerCount": 15,
+    "createdAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "2",
+    "name": "Travel & Hotels",
+    "description": "Travel booking, hotels, and vacation rentals",
+    "icon": "flight",
+    "isActive": true,
+    "offerCount": 12,
+    "createdAt": "2024-01-02T00:00:00Z"
+  },
+  {
+    "id": "3",
+    "name": "Shopping & Retail",
+    "description": "Online shopping, retail stores, and e-commerce",
+    "icon": "shopping_cart",
+    "isActive": true,
+    "offerCount": 25,
+    "createdAt": "2024-01-03T00:00:00Z"
+  },
+  {
+    "id": "4",
+    "name": "Technology",
+    "description": "Software, apps, and tech services",
+    "icon": "computer",
+    "isActive": true,
+    "offerCount": 8,
+    "createdAt": "2024-01-04T00:00:00Z"
+  },
+  {
+    "id": "5",
+    "name": "Food & Delivery",
+    "description": "Food delivery, restaurants, and meal services",
+    "icon": "restaurant",
+    "isActive": false,
+    "offerCount": 6,
+    "createdAt": "2024-01-05T00:00:00Z"
+  }
+]

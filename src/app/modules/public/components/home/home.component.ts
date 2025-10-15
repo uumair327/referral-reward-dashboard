@@ -34,10 +34,17 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Simulate loading delay for better UX
-    setTimeout(() => {
-      this.loading = false;
-    }, 500);
+    // Subscribe to categories to stop loading when they're available
+    this.categories$.subscribe(categories => {
+      if (categories && categories.length > 0) {
+        this.loading = false;
+      } else {
+        // If no categories, still stop loading after a short delay
+        setTimeout(() => {
+          this.loading = false;
+        }, 1000);
+      }
+    });
   }
 
   onCategoryClick(category: Category): void {

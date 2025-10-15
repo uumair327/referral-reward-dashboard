@@ -2,9 +2,11 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1rem;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .header-section {
@@ -164,18 +166,7 @@
   }
 }
 
-.footer-section {
-  margin-top: 3rem;
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #eee;
-  
-  .footer-text {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0;
-  }
-}
+
 
 // Responsive adjustments
 @media (max-width: 480px) {

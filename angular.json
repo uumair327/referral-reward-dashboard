@@ -3,7 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "e0883a52-0b5a-44a3-a025-ddb47ee47656"
+    "analytics": "e0883a52-0b5a-44a3-a025-ddb47ee47656",
+    "schematicCollections": [
+      "@cypress/schematic",
+      "@schematics/angular"
+    ]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -32,8 +36,7 @@
             ],
             "styles": [
               "src/styles.scss"
-            ],
-
+            ]
           },
           "configurations": {
             "production": {
@@ -49,7 +52,8 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -88,6 +92,51 @@
             "styles": [
               "src/styles.scss"
             ]
+          }
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "referral-reward-dashboard:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "referral-reward-dashboard:serve:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false
+          }
+        },
+        "ct": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "referral-reward-dashboard:serve",
+            "watch": true,
+            "headless": false,
+            "testingType": "component"
+          },
+          "configurations": {
+            "development": {
+              "devServerTarget": "referral-reward-dashboard:serve:development"
+            }
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "referral-reward-dashboard:serve",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "referral-reward-dashboard:serve:production"
+            }
           }
         }
       }
