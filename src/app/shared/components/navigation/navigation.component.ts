@@ -10,6 +10,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay, filter } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
+import { VersionService } from '../../../services/version.service';
 
 @Component({
   selector: 'app-navigation',
@@ -31,11 +32,13 @@ export class NavigationComponent implements OnInit {
   isAdmin$: Observable<boolean>;
   currentRoute = '';
   sidenavOpened = false;
+  version = '';
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private versionService: VersionService
   ) {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)
       .pipe(
@@ -49,6 +52,12 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Initialize version info
+    this.version = this.versionService.getVersion();
+    
+    // Force cache refresh if new deployment
+    this.versionService.forceCacheRefresh();
+    
     // Track current route for navigation highlighting
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

@@ -467,3 +467,29 @@
   background: linear-gradient(135deg, rgba(25, 118, 210, 0.02), rgba(66, 165, 245, 0.02));
   border-top: 1px solid rgba(25, 118, 210, 0.1);
 }
+// F
+ooter styles
+.app-footer {
+  .footer-bottom {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    
+    .version-info {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      opacity: 0.6;
+      
+      .cache-info {
+        cursor: help;
+        text-decoration: underline dotted;
+        
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
