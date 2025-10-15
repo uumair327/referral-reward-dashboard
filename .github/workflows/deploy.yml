@@ -19,6 +19,11 @@ jobs:
       pages: write
       id-token: write
     
+    # Configure environment for GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
@@ -46,6 +51,8 @@ jobs:
         
     - name: 🔧 Setup Pages
       uses: actions/configure-pages@v4
+      with:
+        enablement: true
       
     - name: 📤 Upload to GitHub Pages
       uses: actions/upload-pages-artifact@v3
