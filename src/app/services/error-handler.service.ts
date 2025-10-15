@@ -172,4 +172,54 @@ export class ErrorHandlerService {
   handleOfflineError(): void {
     console.warn('Application is offline. Some features may not work.');
   }
+
+  /**
+   * Get localStorage usage information
+   */
+  getLocalStorageInfo(): { used: number; available: number; percentage: number } {
+    try {
+      let used = 0;
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          used += localStorage[key].length + key.length;
+        }
+      }
+      
+      // Estimate available space (most browsers have ~5-10MB limit)
+      const estimated = 5 * 1024 * 1024; // 5MB estimate
+      const percentage = (used / estimated) * 100;
+      
+      return {
+        used,
+        available: estimated - used,
+        percentage: Math.min(percentage, 100)
+      };
+    } catch (error) {
+      return { used: 0, available: 0, percentage: 0 };
+    }
+  }
+
+  /**
+   * Clean up localStorage to free space
+   */
+  cleanupLocalStorage(): void {
+    try {
+      // Remove error logs first
+      localStorage.removeItem('app_errors');
+      
+      // Remove any temporary data
+      const keysToRemove = [];
+      for (let key in localStorage) {
+        if (key.startsWith('temp_') || key.startsWith('cache_')) {
+          keysToRemove.push(key);
+        }
+      }
+      
+      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      console.log('localStorage cleanup completed');
+    } catch (error) {
+      console.error('Failed to cleanup localStorage:', error);
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { 
@@ -15,10 +15,11 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
+export class CategoryService implements OnDestroy {
   private readonly STORAGE_KEY = 'referral_categories';
   private categoriesSubject = new BehaviorSubject<Category[]>([]);
   public categories$ = this.categoriesSubject.asObservable();
+  private updateTimeouts = new Map<string, any>();
 
   constructor() {
     this.loadCategories();
@@ -58,10 +59,44 @@ export class CategoryService {
    */
   private saveCategories(categories: Category[]): void {
     try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
+      // Check if localStorage is available and has space
+      if (typeof Storage === 'undefined') {
+        console.warn('localStorage is not available');
+        this.categoriesSubject.next(categories);
+        return;
+      }
+
+      const serializedData = JSON.stringify(categories);
+      
+      // Check for circular references or overly large data
+      if (serializedData.length > 5 * 1024 * 1024) { // 5MB limit
+        console.warn('Categories data is too large for localStorage');
+        this.categoriesSubject.next(categories);
+        return;
+      }
+
+      localStorage.setItem(this.STORAGE_KEY, serializedData);
       this.categoriesSubject.next(categories);
     } catch (error) {
       console.error('Error saving categories:', error);
+      
+      // Handle quota exceeded error
+      if ((error as any)?.name === 'QuotaExceededError' || (error as any)?.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        console.warn('localStorage quota exceeded. Clearing old data and retrying...');
+        try {
+          // Clear some space and retry
+          localStorage.removeItem('app_errors'); // Remove error logs first
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
+          this.categoriesSubject.next(categories);
+        } catch (retryError) {
+          console.error('Failed to save categories after clearing space:', retryError);
+          // Still update the subject to maintain app functionality
+          this.categoriesSubject.next(categories);
+        }
+      } else {
+        // For other errors, still update the subject
+        this.categoriesSubject.next(categories);
+      }
     }
   }
 
@@ -282,19 +317,51 @@ export class CategoryService {
   }
 
   /**
-   * Update offer count for a category
+   * Update offer count for a category with debouncing to prevent loops
    */
   updateOfferCount(categoryId: string, count: number): void {
-    const categories = this.categoriesSubject.value;
-    const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+    try {
+      // Clear any existing timeout for this category
+      if (this.updateTimeouts.has(categoryId)) {
+        clearTimeout(this.updateTimeouts.get(categoryId));
+      }
 
-    if (categoryIndex !== -1) {
-      const updatedCategories = [...categories];
-      updatedCategories[categoryIndex] = {
-        ...updatedCategories[categoryIndex],
-        offerCount: Math.max(0, count) // Ensure count is not negative
-      };
-      this.saveCategories(updatedCategories);
+      // Debounce the update to prevent rapid successive calls
+      const timeoutId = setTimeout(() => {
+        this.performOfferCountUpdate(categoryId, count);
+        this.updateTimeouts.delete(categoryId);
+      }, 100); // 100ms debounce
+
+      this.updateTimeouts.set(categoryId, timeoutId);
+    } catch (error) {
+      console.error('Error scheduling offer count update:', error);
+    }
+  }
+
+  /**
+   * Perform the actual offer count update
+   */
+  private performOfferCountUpdate(categoryId: string, count: number): void {
+    try {
+      const categories = this.categoriesSubject.value;
+      const categoryIndex = categories.findIndex(cat => cat.id === categoryId);
+
+      if (categoryIndex !== -1) {
+        const currentCategory = categories[categoryIndex];
+        const newCount = Math.max(0, count); // Ensure count is not negative
+        
+        // Only update if the count has actually changed
+        if (currentCategory.offerCount !== newCount) {
+          const updatedCategories = [...categories];
+          updatedCategories[categoryIndex] = {
+            ...currentCategory,
+            offerCount: newCount
+          };
+          this.saveCategories(updatedCategories);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating offer count:', error);
     }
   }
 
@@ -345,5 +412,20 @@ export class CategoryService {
    */
   private generateId(): string {
     return 'cat_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  /**
+   * Clear all pending update timeouts
+   */
+  private clearAllTimeouts(): void {
+    this.updateTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    this.updateTimeouts.clear();
+  }
+
+  /**
+   * Cleanup method (called when service is destroyed)
+   */
+  ngOnDestroy(): void {
+    this.clearAllTimeouts();
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { 
   ReferralOffer, 
   CreateReferralOfferRequest, 
@@ -54,11 +54,50 @@ export class ReferralService {
    */
   private saveOffers(offers: ReferralOffer[]): void {
     try {
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(offers));
+      // Check if localStorage is available
+      if (typeof Storage === 'undefined') {
+        console.warn('localStorage is not available');
+        this.offersSubject.next(offers);
+        this.updateCategoryCounts(offers);
+        return;
+      }
+
+      const serializedData = JSON.stringify(offers);
+      
+      // Check for overly large data
+      if (serializedData.length > 5 * 1024 * 1024) { // 5MB limit
+        console.warn('Offers data is too large for localStorage');
+        this.offersSubject.next(offers);
+        this.updateCategoryCounts(offers);
+        return;
+      }
+
+      localStorage.setItem(this.STORAGE_KEY, serializedData);
       this.offersSubject.next(offers);
       this.updateCategoryCounts(offers);
     } catch (error) {
       console.error('Error saving offers:', error);
+      
+      // Handle quota exceeded error
+      if ((error as any)?.name === 'QuotaExceededError' || (error as any)?.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+        console.warn('localStorage quota exceeded. Clearing old data and retrying...');
+        try {
+          // Clear some space and retry
+          localStorage.removeItem('app_errors'); // Remove error logs first
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(offers));
+          this.offersSubject.next(offers);
+          this.updateCategoryCounts(offers);
+        } catch (retryError) {
+          console.error('Failed to save offers after clearing space:', retryError);
+          // Still update the subject and category counts to maintain app functionality
+          this.offersSubject.next(offers);
+          this.updateCategoryCounts(offers);
+        }
+      } else {
+        // For other errors, still update the subject and category counts
+        this.offersSubject.next(offers);
+        this.updateCategoryCounts(offers);
+      }
     }
   }
 
@@ -66,22 +105,28 @@ export class ReferralService {
    * Update category offer counts
    */
   private updateCategoryCounts(offers: ReferralOffer[]): void {
-    const categoryCounts = new Map<string, number>();
-    
-    offers.forEach(offer => {
-      if (offer.isActive) {
-        const currentCount = categoryCounts.get(offer.categoryId) || 0;
-        categoryCounts.set(offer.categoryId, currentCount + 1);
-      }
-    });
-
-    // Update each category's offer count
-    this.categoryService.getAllCategories().subscribe(categories => {
-      categories.forEach(category => {
-        const count = categoryCounts.get(category.id) || 0;
-        this.categoryService.updateOfferCount(category.id, count);
+    try {
+      const categoryCounts = new Map<string, number>();
+      
+      offers.forEach(offer => {
+        if (offer.isActive) {
+          const currentCount = categoryCounts.get(offer.categoryId) || 0;
+          categoryCounts.set(offer.categoryId, currentCount + 1);
+        }
       });
-    });
+
+      // Update each category's offer count using take(1) to prevent subscription loops
+      this.categoryService.getAllCategories().pipe(
+        take(1) // Only take the first emission to prevent loops
+      ).subscribe(categories => {
+        categories.forEach(category => {
+          const count = categoryCounts.get(category.id) || 0;
+          this.categoryService.updateOfferCount(category.id, count);
+        });
+      });
+    } catch (error) {
+      console.error('Error updating category counts:', error);
+    }
   }
 
   /**
