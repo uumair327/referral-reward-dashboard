@@ -15,9 +15,14 @@ jobs:
     
     # Set permissions for GitHub Pages deployment
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
+    
+    # Configure environment for GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
     - name: 📥 Checkout code
@@ -44,16 +49,20 @@ jobs:
         cp dist/referral-reward-dashboard/browser/index.html dist/referral-reward-dashboard/browser/404.html
         echo '' > dist/referral-reward-dashboard/browser/.nojekyll
         
-    - name: 🚀 Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+    - name: 🔧 Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: 📤 Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist/referral-reward-dashboard/browser/
-        cname: false
+        path: ./dist/referral-reward-dashboard/browser/
         
+    - name: 🚀 Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      
     - name: ✅ Deployment Success
       run: |
         echo "🎉 Deployment successful!"
-        echo "🌐 Your app will be live at: https://uumair327.github.io/referral-reward-dashboard/"
-        echo "🔑 Admin access: https://uumair327.github.io/referral-reward-dashboard/admin (password: admin123)"
-        echo "⏱️ Note: It may take a few minutes for the site to be available."
+        echo "🌐 Your app is live at: ${{ steps.deployment.outputs.page_url }}"
+        echo "🔑 Admin access: ${{ steps.deployment.outputs.page_url }}admin (password: admin123)"
