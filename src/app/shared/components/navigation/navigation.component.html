@@ -7,14 +7,23 @@
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false || sidenavOpened"
-    (closed)="closeSidenav()">
+    (closed)="closeSidenav()"
+    [disableClose]="false">
     
-    <mat-toolbar class="sidenav-header">
-      <span class="logo">
+    <div class="sidenav-header">
+      <div class="logo" (click)="navigateHome()">
         <mat-icon>card_giftcard</mat-icon>
-        Referral Hub
-      </span>
-    </mat-toolbar>
+        <span>Referral Hub</span>
+      </div>
+      <button 
+        mat-icon-button 
+        class="close-button"
+        (click)="closeSidenav()"
+        *ngIf="isHandset$ | async"
+        aria-label="Close navigation menu">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
     
     <div class="sidenav-content">
       <!-- Public Navigation -->
@@ -148,13 +157,17 @@
   <mat-sidenav-content class="main-content">
     <!-- Top Toolbar -->
     <mat-toolbar color="primary" class="top-toolbar">
+      <!-- Mobile Menu Button -->
       <button
         type="button"
-        aria-label="Toggle sidenav"
+        aria-label="Toggle navigation menu"
         mat-icon-button
         (click)="toggleSidenav()"
+        class="menu-toggle"
         *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        <mat-icon [class.menu-open]="sidenavOpened">
+          {{ sidenavOpened ? 'close' : 'menu' }}
+        </mat-icon>
       </button>
       
       <!-- Desktop Logo -->
@@ -176,25 +189,28 @@
         <button 
           mat-button 
           routerLink="/"
+          class="nav-button"
           [class.active]="isRouteActive('/')">
           <mat-icon>home</mat-icon>
-          Home
+          <span>Home</span>
         </button>
         
-        <div *ngIf="isAdmin$ | async; else guestNav">
+        <div class="auth-section" *ngIf="isAdmin$ | async; else guestNav">
           <button 
             mat-button 
             routerLink="/admin/dashboard"
+            class="nav-button"
             [class.active]="isRouteActive('/admin')">
             <mat-icon>dashboard</mat-icon>
-            Admin
+            <span>Admin</span>
           </button>
           <button 
-            mat-button 
+            mat-stroked-button 
             color="warn"
+            class="logout-button"
             (click)="logout()">
             <mat-icon>logout</mat-icon>
-            Logout
+            <span>Logout</span>
           </button>
         </div>
         
@@ -202,9 +218,10 @@
           <button 
             mat-raised-button 
             color="accent"
+            class="admin-login-button"
             routerLink="/admin">
             <mat-icon>admin_panel_settings</mat-icon>
-            Admin
+            <span>Admin</span>
           </button>
         </ng-template>
       </div>

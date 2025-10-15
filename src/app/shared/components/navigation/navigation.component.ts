@@ -54,7 +54,12 @@ export class NavigationComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.currentRoute = event.url;
-      this.sidenavOpened = false; // Close sidenav on navigation
+      // Close sidenav on navigation for mobile
+      this.isHandset$.subscribe(isHandset => {
+        if (isHandset) {
+          this.sidenavOpened = false;
+        }
+      });
     });
   }
 
@@ -80,6 +85,14 @@ export class NavigationComponent implements OnInit {
   }
 
   isRouteActive(route: string): boolean {
+    if (route === '/') {
+      return this.currentRoute === '/';
+    }
     return this.currentRoute.startsWith(route);
+  }
+
+  navigateAndClose(route: string): void {
+    this.router.navigate([route]);
+    this.closeSidenav();
   }
 }
