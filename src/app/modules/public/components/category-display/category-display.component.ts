@@ -134,6 +134,11 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
     window.open(offer.referralLink, '_blank', 'noopener,noreferrer');
   }
 
+  onGetOfferClick(event: Event, offer: ReferralOffer): void {
+    event.stopPropagation(); // Prevent card click from firing
+    this.onOfferClick(offer);
+  }
+
   goBack(): void {
     this.router.navigate(['/']);
   }

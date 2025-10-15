@@ -69,7 +69,11 @@
           </mat-card-content>
           
           <mat-card-actions align="end">
-            <button mat-raised-button color="primary">
+            <button 
+              mat-raised-button 
+              color="primary"
+              (click)="onGetOfferClick($event, offer)"
+              [attr.aria-label]="'Get ' + offer.title + ' offer'">
               <mat-icon>open_in_new</mat-icon>
               Get Offer
             </button>

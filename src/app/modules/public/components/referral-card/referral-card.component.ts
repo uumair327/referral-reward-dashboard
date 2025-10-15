@@ -32,6 +32,11 @@ export class ReferralCardComponent {
     this.offerClick.emit(this.offer);
   }
 
+  onGetOfferClick(event: Event): void {
+    event.stopPropagation(); // Prevent card click from firing
+    this.offerClick.emit(this.offer);
+  }
+
   onCopyCode(event: Event): void {
     event.stopPropagation();
     if (this.offer.referralCode) {

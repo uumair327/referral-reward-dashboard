@@ -60,6 +60,7 @@
       mat-raised-button 
       color="primary" 
       class="get-offer-btn"
+      (click)="onGetOfferClick($event)"
       [attr.aria-label]="'Get ' + offer.title + ' offer'">
       <mat-icon>open_in_new</mat-icon>
       <span *ngIf="!compact">Get Offer</span>
