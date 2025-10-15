@@ -258,3 +258,41 @@ img {
     color: #ffffff;
   }
 }
+// Update notification styles
+.update-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+  font-weight: 500;
+  
+  .mat-mdc-snack-bar-action {
+    color: #ffffff !important;
+    font-weight: bold;
+  }
+  
+  .mat-mdc-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// Cache busting indicator
+.cache-bust-indicator {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #ff9800;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 9999;
+  opacity: 0.8;
+  
+  &.hidden {
+    display: none;
+  }
+}

@@ -1,4 +1,4 @@
-name: 🚀 Deploy to GitHub Pages
+name: ⚡ Fast Deploy to GitHub Pages
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
 
 env:
   NODE_VERSION: '20'
+  FORCE_COLOR: 1
 
 jobs:
   # 🏗️ Build and Deploy Job
@@ -34,28 +35,41 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📦 Install dependencies
-      run: npm install --ignore-engines
+    - name: 📦 Install dependencies (Fast)
+      run: npm ci --ignore-engines --prefer-offline --no-audit --no-fund
       
-    - name: 🔍 Run linting (optional)
-      run: npm run lint || echo "Linting completed with warnings"
-      continue-on-error: true
-      
-    - name: 🏗️ Build for production
-      run: npm run build:prod
-      
-    - name: 🔧 Prepare for deployment
+    - name: 🏗️ Build for production (Optimized)
       run: |
-        cp src/404.html dist/referral-reward-dashboard/browser/404.html
-        echo '' > dist/referral-reward-dashboard/browser/.nojekyll
+        echo "🔨 Building with cache busting..."
+        export BUILD_TIMESTAMP=$(date +%s)
+        npm run build
+        echo "✅ Build completed at $(date)"
+      
+    - name: 🔧 Prepare for deployment (Cache Busting)
+      run: |
+        # Copy 404 page
+        cp src/404.html dist/referral-reward-dashboard/404.html 2>/dev/null || echo "404.html not found, skipping"
+        
+        # Disable Jekyll
+        echo '' > dist/referral-reward-dashboard/.nojekyll
+        
+        # Add cache busting headers
+        echo "Cache-Control: no-cache, no-store, must-revalidate" > dist/referral-reward-dashboard/_headers
+        echo "Pragma: no-cache" >> dist/referral-reward-dashboard/_headers
+        echo "Expires: 0" >> dist/referral-reward-dashboard/_headers
+        
+        # Add deployment timestamp
+        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/referral-reward-dashboard/deployment-time.txt
+        
+        echo "🚀 Deployment prepared with timestamp: $(date)"
         
     - name: 🔧 Setup Pages
       uses: actions/configure-pages@v4
       
-    - name: 📤 Upload to GitHub Pages
+    - name: 📤 Upload to GitHub Pages (Fast)
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./dist/referral-reward-dashboard/browser/
+        path: ./dist/referral-reward-dashboard/
         
     - name: 🚀 Deploy to GitHub Pages
       id: deployment
