@@ -61,7 +61,7 @@
           </mat-card-header>
           
           <mat-card-content>
-            <p class="offer-description" [innerHTML]="offer.description"></p>
+            <p class="offer-description" [innerHTML]="getSanitizedDescription(offer.description)"></p>
             <div class="offer-stats" *ngIf="offer.clickCount">
               <mat-icon class="stats-icon">visibility</mat-icon>
               <span>{{ offer.clickCount }} clicks</span>

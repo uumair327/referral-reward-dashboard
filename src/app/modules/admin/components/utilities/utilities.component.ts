@@ -24,6 +24,7 @@ import {
   SortDirection 
 } from '../../../../models';
 import { ReferralService, CategoryService, ValidationService } from '../../../../services';
+import { HtmlSanitizerService } from '../../../../services/html-sanitizer.service';
 
 interface LinkValidationResult {
   url: string;
@@ -100,7 +101,8 @@ export class UtilitiesComponent implements OnInit, OnDestroy {
     private referralService: ReferralService,
     private categoryService: CategoryService,
     private validationService: ValidationService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private htmlSanitizer: HtmlSanitizerService
   ) {
     this.linkValidationForm = this.createLinkValidationForm();
     this.codeGenerationForm = this.createCodeGenerationForm();
@@ -414,6 +416,10 @@ export class UtilitiesComponent implements OnInit, OnDestroy {
 
   getCategoryForOffer(categoryId: string): Category | undefined {
     return this.categories.find(c => c.id === categoryId);
+  }
+
+  getSanitizedDescription(description: string): string {
+    return this.htmlSanitizer.sanitize(description);
   }
 
   // Utility Methods

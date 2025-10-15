@@ -305,7 +305,7 @@
                     
                     <div class="offer-content">
                       <h3 class="offer-title">{{ selectedOffer.title }}</h3>
-                      <div class="offer-description" [innerHTML]="selectedOffer.description"></div>
+                      <div class="offer-description" [innerHTML]="getSanitizedDescription(selectedOffer.description)"></div>
                       
                       <div class="offer-code" *ngIf="selectedOffer.referralCode">
                         <mat-chip class="code-chip">

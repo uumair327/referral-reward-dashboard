@@ -13,6 +13,7 @@ import { Observable, Subject, combineLatest } from 'rxjs';
 import { takeUntil, switchMap, map, startWith, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Category, ReferralOffer, PaginatedResponse, SortDirection } from '../../../../models';
 import { CategoryService, ReferralService } from '../../../../services';
+import { HtmlSanitizerService } from '../../../../services/html-sanitizer.service';
 
 @Component({
   selector: 'app-category-display',
@@ -48,7 +49,8 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private categoryService: CategoryService,
-    private referralService: ReferralService
+    private referralService: ReferralService,
+    private htmlSanitizer: HtmlSanitizerService
   ) {
     // Get category from route params
     this.category$ = this.route.params.pipe(
@@ -180,6 +182,10 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
 
   trackByOffer(index: number, offer: ReferralOffer): string {
     return offer.id;
+  }
+
+  getSanitizedDescription(description: string): string {
+    return this.htmlSanitizer.sanitize(description);
   }
 
   private refreshOffers(): void {

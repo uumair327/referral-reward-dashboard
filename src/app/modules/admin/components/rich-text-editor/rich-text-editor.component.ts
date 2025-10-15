@@ -227,13 +227,39 @@ export class RichTextEditorComponent implements OnInit, OnDestroy, ControlValueA
     return this.characterCount <= this.maxLength;
   }
 
-  // Sanitization (basic)
+  // Sanitization (enhanced)
   sanitizeContent(html: string): string {
-    // Basic HTML sanitization - remove script tags and dangerous attributes
-    return html
+    if (!html) return '';
+    
+    let sanitized = html;
+    
+    // First, decode HTML entities if they exist
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const decodedHtml = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // If the decoded content contains HTML tags, it means HTML was stored as entities
+    if (decodedHtml.includes('<') && decodedHtml.includes('>')) {
+      sanitized = decodedHtml;
+    }
+    
+    // Remove dangerous elements and attributes
+    sanitized = sanitized
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
       .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
       .replace(/javascript:/gi, '')
       .replace(/on\w+\s*=/gi, '');
+    
+    // Clean up empty HTML tags and excessive whitespace
+    sanitized = sanitized
+      .replace(/<div>\s*<\/div>/gi, '') // Remove empty divs
+      .replace(/<p>\s*<\/p>/gi, '') // Remove empty paragraphs
+      .replace(/<br>\s*<br>/gi, '<br>') // Remove duplicate line breaks
+      .replace(/(<br>\s*){3,}/gi, '<br><br>') // Limit consecutive line breaks
+      .replace(/^\s*(<br>\s*)+/gi, '') // Remove leading line breaks
+      .replace(/(<br>\s*)+\s*$/gi, '') // Remove trailing line breaks
+      .trim();
+    
+    return sanitized;
   }
 }

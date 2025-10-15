@@ -38,7 +38,7 @@
     </div>
     
     <!-- Description -->
-    <p class="offer-description" [class.compact]="compact" [innerHTML]="offer.description"></p>
+    <p class="offer-description" [class.compact]="compact" [innerHTML]="getSanitizedDescription(offer.description)"></p>
     
     <!-- Stats Section -->
     <div class="stats-section" *ngIf="!compact">

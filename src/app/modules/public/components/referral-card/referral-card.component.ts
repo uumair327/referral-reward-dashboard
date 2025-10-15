@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { ReferralOffer, Category } from '../../../../models';
+import { HtmlSanitizerService } from '../../../../services/html-sanitizer.service';
 
 @Component({
   selector: 'app-referral-card',
@@ -27,6 +28,8 @@ export class ReferralCardComponent {
 
   @Output() offerClick = new EventEmitter<ReferralOffer>();
   @Output() copyCode = new EventEmitter<string>();
+
+  constructor(private htmlSanitizer: HtmlSanitizerService) {}
 
   onOfferClick(): void {
     this.offerClick.emit(this.offer);
@@ -68,5 +71,9 @@ export class ReferralCardComponent {
       day: 'numeric',
       year: 'numeric'
     }).format(new Date(date));
+  }
+
+  getSanitizedDescription(description: string): string {
+    return this.htmlSanitizer.sanitize(description);
   }
 }
