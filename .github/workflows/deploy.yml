@@ -47,19 +47,26 @@ jobs:
       
     - name: 🔧 Prepare for deployment (Cache Busting)
       run: |
-        # Copy 404 page
-        cp src/404.html dist/referral-reward-dashboard/404.html 2>/dev/null || echo "404.html not found, skipping"
+        # Check build output structure
+        echo "📁 Build output structure:"
+        ls -la dist/referral-reward-dashboard/
         
-        # Disable Jekyll
-        echo '' > dist/referral-reward-dashboard/.nojekyll
+        # Copy 404 page to browser folder if it exists
+        if [ -f "src/404.html" ]; then
+          cp src/404.html dist/referral-reward-dashboard/browser/404.html
+          echo "✅ 404.html copied"
+        fi
+        
+        # Disable Jekyll in browser folder
+        echo '' > dist/referral-reward-dashboard/browser/.nojekyll
         
         # Add cache busting headers
-        echo "Cache-Control: no-cache, no-store, must-revalidate" > dist/referral-reward-dashboard/_headers
-        echo "Pragma: no-cache" >> dist/referral-reward-dashboard/_headers
-        echo "Expires: 0" >> dist/referral-reward-dashboard/_headers
+        echo "Cache-Control: no-cache, no-store, must-revalidate" > dist/referral-reward-dashboard/browser/_headers
+        echo "Pragma: no-cache" >> dist/referral-reward-dashboard/browser/_headers
+        echo "Expires: 0" >> dist/referral-reward-dashboard/browser/_headers
         
         # Add deployment timestamp
-        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/referral-reward-dashboard/deployment-time.txt
+        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/referral-reward-dashboard/browser/deployment-time.txt
         
         echo "🚀 Deployment prepared with timestamp: $(date)"
         
@@ -69,7 +76,7 @@ jobs:
     - name: 📤 Upload to GitHub Pages (Fast)
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./dist/referral-reward-dashboard/
+        path: ./dist/referral-reward-dashboard/browser/
         
     - name: 🚀 Deploy to GitHub Pages
       id: deployment
