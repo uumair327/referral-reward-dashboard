@@ -8,7 +8,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { map, shareReplay, filter } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 
