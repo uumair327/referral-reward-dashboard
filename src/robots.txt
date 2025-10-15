@@ -1,0 +1,52 @@
+User-agent: *
+Allow: /
+Allow: /category/
+Allow: /category/demat-account
+Allow: /category/medical-app
+Allow: /category/hospitality-hotel
+Allow: /category/entertainment
+Allow: /category/online-products
+
+# Allow popular SEO pages
+Allow: /best-referral-offers
+Allow: /cashback-deals
+Allow: /reward-programs
+Allow: /demat-account-offers
+Allow: /zerodha-referral
+Allow: /upstox-referral
+Allow: /groww-referral
+
+# Disallow admin pages from search indexing
+Disallow: /admin/
+Disallow: /admin/*
+
+# Disallow private/internal files
+Disallow: /*.json$
+Disallow: /assets/config/
+Disallow: /node_modules/
+
+# Allow error pages but with low priority
+Allow: /404
+Allow: /error
+Allow: /network-error
+
+# Sitemap location
+Sitemap: https://uumair327.github.io/referral-reward-dashboard/sitemap.xml
+
+# Crawl delay (be respectful to servers)
+Crawl-delay: 1
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /

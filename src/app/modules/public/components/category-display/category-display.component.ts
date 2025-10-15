@@ -14,6 +14,7 @@ import { takeUntil, switchMap, map, startWith, debounceTime, distinctUntilChange
 import { Category, ReferralOffer, PaginatedResponse, SortDirection } from '../../../../models';
 import { CategoryService, ReferralService } from '../../../../services';
 import { HtmlSanitizerService } from '../../../../services/html-sanitizer.service';
+import { SEOService } from '../../../../services/seo.service';
 
 @Component({
   selector: 'app-category-display',
@@ -50,7 +51,8 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
     private router: Router,
     private categoryService: CategoryService,
     private referralService: ReferralService,
-    private htmlSanitizer: HtmlSanitizerService
+    private htmlSanitizer: HtmlSanitizerService,
+    private seoService: SEOService
   ) {
     // Get category from route params
     this.category$ = this.route.params.pipe(
@@ -92,6 +94,9 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
           this.router.navigate(['/404']);
         } else {
           this.loading = false;
+          
+          // Update SEO meta tags for category page
+          this.updateCategorySEO(category);
         }
       },
       error: (error) => {
@@ -199,5 +204,46 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
       sortBy: 'updatedAt',
       sortDirection: SortDirection.DESC
     });
+  }
+
+  private updateCategorySEO(category: Category): void {
+    const categoryKeywords = this.getCategoryKeywords(category.id);
+    const title = `${category.name} Referral Offers - Best ${category.name} Cashback Deals`;
+    const description = `Find the best ${category.name.toLowerCase()} referral offers and cashback deals. ${category.description || 'Discover exclusive bonuses and rewards.'} Start earning today!`;
+
+    this.seoService.updateSEO({
+      title,
+      description,
+      keywords: `${category.name.toLowerCase()}, ${categoryKeywords}, referral offers, cashback, rewards, bonuses`,
+      url: `https://uumair327.github.io/referral-reward-dashboard/category/${category.id}`,
+      type: 'website',
+      image: 'https://uumair327.github.io/referral-reward-dashboard/assets/og-image.png'
+    });
+
+    // Add category-specific structured data
+    this.seoService.addStructuredData({
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      'name': title,
+      'description': description,
+      'url': `https://uumair327.github.io/referral-reward-dashboard/category/${category.id}`,
+      'mainEntity': {
+        '@type': 'ItemList',
+        'name': `${category.name} Referral Offers`,
+        'description': `Collection of ${category.name.toLowerCase()} referral offers and cashback deals`
+      }
+    });
+  }
+
+  private getCategoryKeywords(categoryId: string): string {
+    const keywordMap: { [key: string]: string } = {
+      'demat-account': 'demat account referral, stock trading, investment, zerodha, upstox, groww, angel broking',
+      'medical-app': 'medical app offers, healthcare, telemedicine, doctor consultation, health insurance',
+      'hospitality-hotel': 'hotel booking, travel deals, accommodation, booking.com, makemytrip, oyo',
+      'entertainment': 'entertainment deals, streaming, movies, music, netflix, amazon prime, spotify',
+      'online-products': 'online shopping, e-commerce, amazon, flipkart, cashback, shopping deals'
+    };
+    
+    return keywordMap[categoryId] || 'referral programs, affiliate offers, bonus deals';
   }
 }
