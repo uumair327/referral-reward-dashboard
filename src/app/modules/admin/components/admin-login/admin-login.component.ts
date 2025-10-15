@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../../../services/auth.service';
+import { SecureAuthService } from '../../../../services/secure-auth.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -32,10 +33,15 @@ export class AdminLoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   hidePassword = true;
+  loginAttempts = 0;
+  maxAttempts = 3;
+  lockoutTime = 0;
+  showSecurityInfo = false;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private secureAuthService: SecureAuthService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
@@ -46,42 +52,61 @@ export class AdminLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Redirect if already authenticated
-    if (this.authService.isAuthenticated()) {
+    // Redirect if already authenticated with secure service
+    if (this.secureAuthService.isAuthenticated()) {
       this.redirectToAdmin();
     }
+    
+    // Show security information
+    this.showSecurityInfo = true;
+    
+    // Log page access for security monitoring
+    console.log('🔐 Admin login page accessed:', {
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      referrer: document.referrer
+    });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.loginForm.valid && !this.loading) {
       this.loading = true;
       const { username, password } = this.loginForm.value;
 
-      this.authService.login(username, password).subscribe({
-        next: (result) => {
-          this.loading = false;
-          if (result.success) {
-            this.snackBar.open('Login successful!', 'Close', {
-              duration: 3000,
-              panelClass: ['success-snackbar']
-            });
-            this.redirectToAdmin();
-          } else {
-            this.snackBar.open(result.error || 'Login failed', 'Close', {
-              duration: 5000,
-              panelClass: ['error-snackbar']
-            });
-          }
-        },
-        error: (error) => {
-          this.loading = false;
-          this.snackBar.open('An error occurred during login', 'Close', {
-            duration: 5000,
-            panelClass: ['error-snackbar']
+      try {
+        const success = await this.secureAuthService.login(username, password);
+        
+        if (success) {
+          this.snackBar.open('🔐 Secure login successful!', 'Close', {
+            duration: 3000,
+            panelClass: ['success-snackbar']
           });
-          console.error('Login error:', error);
+          this.loginAttempts = 0;
+          this.redirectToAdmin();
         }
-      });
+      } catch (error: any) {
+        this.loginAttempts++;
+        this.loading = false;
+        
+        let errorMessage = 'Login failed';
+        if (error.message.includes('Too many failed attempts')) {
+          errorMessage = error.message;
+          this.lockoutTime = 15; // 15 minutes
+          this.startLockoutTimer();
+        } else if (error.message.includes('Invalid credentials')) {
+          errorMessage = `Invalid credentials (${this.loginAttempts}/${this.maxAttempts} attempts)`;
+        }
+        
+        this.snackBar.open(`🚨 ${errorMessage}`, 'Close', {
+          duration: 8000,
+          panelClass: ['error-snackbar']
+        });
+        
+        // Clear password field for security
+        this.loginForm.patchValue({ password: '' });
+        
+        console.error('🔐 Secure login error:', error);
+      }
     } else {
       this.markFormGroupTouched();
     }
@@ -119,5 +144,35 @@ export class AdminLoginComponent implements OnInit {
 
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;
+  }
+
+  private startLockoutTimer(): void {
+    const timer = setInterval(() => {
+      this.lockoutTime--;
+      if (this.lockoutTime <= 0) {
+        clearInterval(timer);
+      }
+    }, 60000); // Update every minute
+  }
+
+  getLockoutMessage(): string {
+    if (this.lockoutTime > 0) {
+      return `Account locked. Try again in ${this.lockoutTime} minutes.`;
+    }
+    return '';
+  }
+
+  isFormDisabled(): boolean {
+    return this.loading || this.lockoutTime > 0;
+  }
+
+  getSecurityInfo(): string[] {
+    return [
+      '🔐 Secure admin access with enhanced protection',
+      '🛡️ Session timeout: 30 minutes of inactivity',
+      '🚨 Maximum 3 login attempts before lockout',
+      '⏰ 15-minute lockout after failed attempts',
+      '📊 All access attempts are logged and monitored'
+    ];
   }
 }

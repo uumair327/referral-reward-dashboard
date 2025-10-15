@@ -3,6 +3,7 @@ import { CanActivate, CanActivateChild, Router, ActivatedRouteSnapshot, RouterSt
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
+import { SecureAuthService } from '../../../services/secure-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class AdminGuard implements CanActivate, CanActivateChild {
 
   constructor(
     private authService: AuthService,
+    private secureAuthService: SecureAuthService,
     private router: Router
   ) {}
 
@@ -29,12 +31,28 @@ export class AdminGuard implements CanActivate, CanActivateChild {
   }
 
   private checkAdminAccess(url: string): Observable<boolean> {
-    return this.authService.currentUser$.pipe(
+    // Use secure authentication service
+    return this.secureAuthService.currentUser$.pipe(
       take(1),
       map(user => {
         if (user && user.isAuthenticated) {
+          // Log access attempt for security monitoring
+          console.log('🔐 Admin access granted:', {
+            username: user.username,
+            url,
+            timestamp: new Date().toISOString(),
+            sessionId: user.sessionId.substring(0, 8) + '...'
+          });
           return true;
         } else {
+          // Log unauthorized access attempt
+          console.warn('🚨 Unauthorized admin access attempt:', {
+            url,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            referrer: document.referrer
+          });
+          
           // Store the attempted URL for redirect after login
           sessionStorage.setItem('admin_redirect_url', url);
           
