@@ -83,11 +83,19 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
     // Check if category exists, redirect if not
     this.category$.pipe(
       takeUntil(this.destroy$)
-    ).subscribe(category => {
-      if (category === undefined) {
-        this.router.navigate(['/']);
-      } else {
+    ).subscribe({
+      next: (category) => {
+        if (category === undefined) {
+          // Category not found, redirect to 404
+          this.router.navigate(['/404']);
+        } else {
+          this.loading = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading category:', error);
         this.loading = false;
+        this.router.navigate(['/error']);
       }
     });
   }
@@ -129,9 +137,36 @@ export class CategoryDisplayComponent implements OnInit, OnDestroy {
   }
 
   onOfferClick(offer: ReferralOffer): void {
-    // Track click and redirect to referral link
-    this.referralService.trackClick(offer.id).subscribe();
-    window.open(offer.referralLink, '_blank', 'noopener,noreferrer');
+    try {
+      // Track click and redirect to referral link
+      this.referralService.trackClick(offer.id).subscribe({
+        next: () => {
+          console.log('Click tracked successfully');
+        },
+        error: (error) => {
+          console.error('Failed to track click:', error);
+          // Still proceed with opening the link
+        }
+      });
+      
+      // Open referral link
+      const opened = window.open(offer.referralLink, '_blank', 'noopener,noreferrer');
+      
+      // Check if popup was blocked
+      if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+        // Fallback: navigate in same tab
+        window.location.href = offer.referralLink;
+      }
+    } catch (error) {
+      console.error('Error opening referral link:', error);
+      // Fallback: try direct navigation
+      try {
+        window.location.href = offer.referralLink;
+      } catch (fallbackError) {
+        console.error('Fallback navigation failed:', fallbackError);
+        alert('Unable to open referral link. Please try again or copy the link manually.');
+      }
+    }
   }
 
   onGetOfferClick(event: Event, offer: ReferralOffer): void {
