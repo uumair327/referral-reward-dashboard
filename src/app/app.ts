@@ -2,27 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './shared/components/navigation/navigation.component';
-import { UpdateNotificationComponent } from './shared/components/update-notification/update-notification.component';
-import { InstantRefreshService } from './services/instant-refresh.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavigationComponent, UpdateNotificationComponent],
+  imports: [RouterOutlet, NavigationComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
-  constructor(
-    private router: Router,
-    private instantRefreshService: InstantRefreshService
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    // Initialize instant refresh service
-    console.log('⚡ Instant refresh service initialized');
-    
-    // Enable cache bypassing for immediate updates
-    this.instantRefreshService.bypassCache();
+    console.log('🚀 Referral Dashboard App initialized');
     
     // Handle redirects from 404 page
     const redirectUrl = sessionStorage.getItem('redirectUrl');
