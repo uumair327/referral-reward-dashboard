@@ -6,6 +6,8 @@ export interface Category {
   isActive: boolean;
   offerCount: number;
   displayOrder: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateCategoryRequest {
@@ -28,7 +30,7 @@ export enum CategoryId {
   ONLINE_PRODUCTS = 'online-products'
 }
 
-export const DEFAULT_CATEGORIES: Omit<Category, 'offerCount'>[] = [
+export const DEFAULT_CATEGORIES: Omit<Category, 'offerCount' | 'createdAt' | 'updatedAt'>[] = [
   {
     id: CategoryId.DEMAT_ACCOUNT,
     name: 'Demat Account',

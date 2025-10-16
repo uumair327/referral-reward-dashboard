@@ -11,6 +11,7 @@ import {
   PaginationParams,
   FilterParams
 } from '../models';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,16 @@ export class CategoryService implements OnDestroy {
   public categories$ = this.categoriesSubject.asObservable();
   private updateTimeouts = new Map<string, any>();
 
-  constructor() {
-    this.loadCategories();
+  constructor(private firebaseService: FirebaseService) {
+    this.initializeWithFirebase();
+  }
+
+  private initializeWithFirebase(): void {
+    // Subscribe to Firebase categories for real-time updates
+    this.firebaseService.getCategories().subscribe((categories: Category[]) => {
+      this.categoriesSubject.next(categories);
+      console.log('📡 Categories updated from Firebase:', categories.length);
+    });
   }
 
   /**
@@ -38,7 +47,9 @@ export class CategoryService implements OnDestroy {
         // Initialize with default categories
         const defaultCategories: Category[] = DEFAULT_CATEGORIES.map(cat => ({
           ...cat,
-          offerCount: 0
+          offerCount: 0,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }));
         this.saveCategories(defaultCategories);
         this.categoriesSubject.next(defaultCategories);
@@ -48,7 +59,9 @@ export class CategoryService implements OnDestroy {
       // Fallback to default categories
       const defaultCategories: Category[] = DEFAULT_CATEGORIES.map(cat => ({
         ...cat,
-        offerCount: 0
+        offerCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }));
       this.categoriesSubject.next(defaultCategories);
     }
@@ -207,7 +220,9 @@ export class CategoryService implements OnDestroy {
         description: request.description,
         isActive: true,
         offerCount: 0,
-        displayOrder: request.displayOrder ?? categories.length + 1
+        displayOrder: request.displayOrder ?? categories.length + 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
       const updatedCategories = [...categories, newCategory];
@@ -389,7 +404,9 @@ export class CategoryService implements OnDestroy {
     try {
       const defaultCategories: Category[] = DEFAULT_CATEGORIES.map(cat => ({
         ...cat,
-        offerCount: 0
+        offerCount: 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
       }));
       
       this.saveCategories(defaultCategories);

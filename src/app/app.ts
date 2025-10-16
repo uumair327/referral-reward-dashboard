@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './shared/components/navigation/navigation.component';
+import { RealtimeSyncComponent } from './shared/components/realtime-sync/realtime-sync.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavigationComponent],
+  imports: [RouterOutlet, NavigationComponent, RealtimeSyncComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

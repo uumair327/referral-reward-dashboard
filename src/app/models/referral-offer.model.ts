@@ -9,6 +9,11 @@ export interface ReferralOffer {
   createdAt: Date;
   updatedAt: Date;
   clickCount?: number;
+  conversionCount?: number;
+  cashbackAmount?: number;
+  validUntil?: Date;
+  isFeatured?: boolean;
+  displayOrder?: number;
 }
 
 export interface CreateReferralOfferRequest {

@@ -12,6 +12,7 @@ import {
   OfferStatus
 } from '../models';
 import { CategoryService } from './category.service';
+import { FirebaseService } from './firebase.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +22,19 @@ export class ReferralService {
   private offersSubject = new BehaviorSubject<ReferralOffer[]>([]);
   public offers$ = this.offersSubject.asObservable();
 
-  constructor(private categoryService: CategoryService) {
-    this.loadOffers();
+  constructor(
+    private categoryService: CategoryService,
+    private firebaseService: FirebaseService
+  ) {
+    this.initializeWithFirebase();
+  }
+
+  private initializeWithFirebase(): void {
+    // Subscribe to Firebase offers for real-time updates
+    this.firebaseService.getOffers().subscribe(offers => {
+      this.offersSubject.next(offers);
+      console.log('📡 Offers updated from Firebase:', offers.length);
+    });
   }
 
   /**
