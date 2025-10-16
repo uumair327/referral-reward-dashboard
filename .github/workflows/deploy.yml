@@ -40,9 +40,9 @@ jobs:
       
     - name: 🏗️ Build for production (Optimized)
       run: |
-        echo "🔨 Building with cache busting..."
+        echo "🔨 Building with GitHub Pages base href..."
         export BUILD_TIMESTAMP=$(date +%s)
-        npm run build
+        npm run build -- --base-href=/referral-reward-dashboard/
         echo "✅ Build completed at $(date)"
       
     - name: 🔧 Prepare for deployment (Cache Busting)

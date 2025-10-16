@@ -65,6 +65,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/referral-reward-dashboard/",
               "budgets": [
                 {
                   "type": "initial",
