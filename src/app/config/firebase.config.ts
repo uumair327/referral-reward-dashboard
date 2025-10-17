@@ -3,19 +3,13 @@
 // Get these from: https://console.firebase.google.com/
 
 export const firebaseConfig = {
-  // 🔥 FIREBASE SETUP REQUIRED
-  // 1. Go to https://console.firebase.google.com/
-  // 2. Create a new project or select existing one
-  // 3. Go to Project Settings > General > Your apps
-  // 4. Click "Add app" and select Web (</>) 
-  // 5. Copy the config values below
-
-  apiKey: "your-api-key-here",
-  authDomain: "your-project.firebaseapp.com", 
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "your-app-id-here"
+  apiKey: "AIzaSyDOqVr7v7tNimLPGWsZ0X-zAbHeZ0H1pCA",
+  authDomain: "referral-rewards-hub-982ca.firebaseapp.com",
+  projectId: "referral-rewards-hub-982ca",
+  storageBucket: "referral-rewards-hub-982ca.firebasestorage.app",
+  messagingSenderId: "249490634003",
+  appId: "1:249490634003:web:8d74b7fe013741637496e6",
+  measurementId: "G-4TDLVSQG4V"
 };
 
 // 🚀 QUICK SETUP GUIDE:
@@ -53,7 +47,7 @@ service cloud.firestore {
 }
 */
 
-export const FIREBASE_ENABLED = false; // Set to true after configuring Firebase
+export const FIREBASE_ENABLED = true; // Firebase is now configured and active!
 
 // 💡 ALTERNATIVE: Use environment variables for security
 // In production, consider using environment variables:
