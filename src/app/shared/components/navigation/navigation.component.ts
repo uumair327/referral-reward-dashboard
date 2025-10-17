@@ -10,6 +10,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay, filter } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
+import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-navigation',
@@ -21,7 +22,8 @@ import { AuthService } from '../../../services/auth.service';
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
-    MatSidenavModule
+    MatSidenavModule,
+    ThemeToggleComponent
   ],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.scss'
