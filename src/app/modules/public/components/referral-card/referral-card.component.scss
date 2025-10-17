@@ -1,14 +1,17 @@
 .referral-card {
   cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elevation-1);
   position: relative;
   overflow: hidden;
+  background: white;
+  border: 1px solid var(--surface-200);
   
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--elevation-3);
+    border-color: var(--primary-200);
     
     .hover-overlay {
       opacity: 1;
@@ -16,12 +19,12 @@
   }
   
   &:focus {
-    outline: 2px solid #1976d2;
+    outline: 2px solid var(--primary-600);
     outline-offset: 2px;
   }
   
   &:active {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
   
   &.compact {
@@ -30,53 +33,61 @@
     }
     
     mat-card-content {
-      padding-bottom: 0.5rem;
+      padding-bottom: var(--space-2);
     }
   }
 }
 
 .offer-avatar {
-  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-400));
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
   
   mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
   }
 }
 
 .offer-title {
-  font-size: 1.3rem;
+  font-family: 'Google Sans', sans-serif;
+  font-size: var(--text-xl);
   font-weight: 500;
-  color: #333;
+  color: var(--surface-800);
   line-height: 1.3;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .category-name {
-  color: #1976d2;
+  color: var(--primary-600);
   font-weight: 500;
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .code-section {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
   
   .referral-code-chip {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: var(--primary-50);
+    color: var(--primary-700);
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-full);
+    font-family: 'Google Sans', sans-serif;
     
     &:hover {
-      background-color: #bbdefb;
+      background-color: var(--primary-100);
       transform: scale(1.02);
+      box-shadow: var(--elevation-1);
     }
     
     mat-icon {

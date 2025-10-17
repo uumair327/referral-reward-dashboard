@@ -2,17 +2,18 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--surface-50);
 }
 
 .sidenav {
   width: 280px;
-  background: #fafafa;
-  border-right: 1px solid #e0e0e0;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-right: 1px solid var(--surface-200);
+  box-shadow: var(--elevation-2);
 
   @media (max-width: 768px) {
     width: 280px;
-    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--elevation-4);
   }
   
   @media (max-width: 480px) {
@@ -22,42 +23,47 @@
 }
 
 .sidenav-header {
-  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-400));
   color: white;
-  min-height: 64px;
-  padding: 0 16px;
+  min-height: 72px;
+  padding: 0 var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: var(--elevation-1);
   
   .logo {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 1.2rem;
+    gap: var(--space-3);
+    font-family: 'Google Sans', sans-serif;
+    font-size: var(--text-xl);
     font-weight: 500;
     cursor: pointer;
-    transition: opacity 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
     &:hover {
       opacity: 0.9;
+      transform: scale(1.02);
     }
     
     mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
     }
   }
   
   .close-button {
     color: white;
     opacity: 0.8;
-    transition: opacity 0.3s ease;
+    transition: all 0.2s ease;
+    border-radius: var(--radius-full);
     
     &:hover {
       opacity: 1;
       background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
     }
   }
 }
@@ -93,63 +99,66 @@
 .nav-link {
   display: flex !important;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   width: 100%;
-  padding: 16px 20px;
+  padding: var(--space-3) var(--space-4);
   text-align: left;
   justify-content: flex-start;
-  color: #555;
+  color: var(--surface-700);
   text-decoration: none;
-  border-radius: 0 24px 24px 0;
-  margin: 2px 0;
-  margin-right: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0 var(--radius-full) var(--radius-full) 0;
+  margin: var(--space-1) 0;
+  margin-right: var(--space-2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  font-family: 'Google Sans', sans-serif;
+  font-weight: 400;
   
   &:hover {
-    background-color: rgba(25, 118, 210, 0.08);
-    color: #1976d2;
-    transform: translateX(4px);
+    background-color: rgba(66, 133, 244, 0.08);
+    color: var(--primary-700);
+    transform: translateX(2px);
     
     mat-icon {
-      color: #1976d2;
+      color: var(--primary-600);
       transform: scale(1.1);
     }
   }
   
   &.active {
-    background-color: rgba(25, 118, 210, 0.12);
-    color: #1976d2;
-    border-right: 4px solid #1976d2;
+    background-color: rgba(66, 133, 244, 0.12);
+    color: var(--primary-700);
     font-weight: 500;
     
     &::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 0;
-      bottom: 0;
+      top: 50%;
+      transform: translateY(-50%);
       width: 4px;
-      background: linear-gradient(135deg, #1976d2, #42a5f5);
-      border-radius: 0 2px 2px 0;
+      height: 24px;
+      background: var(--primary-600);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
     }
     
     mat-icon {
-      color: #1976d2;
+      color: var(--primary-600);
       transform: scale(1.1);
     }
   }
   
   mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    color: #666;
-    transition: all 0.3s ease;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    color: var(--surface-600);
+    transition: all 0.2s ease;
   }
   
   span {
-    font-size: 0.95rem;
+    font-size: var(--text-sm);
+    font-weight: inherit;
   }
 }
 
@@ -179,22 +188,27 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--elevation-1);
+  border-bottom: 1px solid var(--surface-200);
   
   .menu-toggle {
-    margin-right: 8px;
-    transition: transform 0.3s ease;
+    margin-right: var(--space-2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-full);
     
     &:hover {
       transform: scale(1.1);
+      background-color: var(--surface-100);
     }
     
     mat-icon {
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
+      color: var(--surface-700);
       
       &.menu-open {
-        transform: rotate(180deg);
+        transform: rotate(90deg);
       }
     }
   }
