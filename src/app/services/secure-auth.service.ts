@@ -144,8 +144,8 @@ export class SecureAuthService {
     // In a real app, this would validate against your secure backend
     // For now, we'll use environment variables or hardcoded secure values
     
-    const validUsername = this.getSecureConfig('ADMIN_USERNAME') || 'admin';
-    const validPassword = this.getSecureConfig('ADMIN_PASSWORD') || 'SecureAdmin2025!';
+    const validUsername = this.getSecureConfig('ADMIN_USERNAME') || 'uumair327';
+    const validPassword = this.getSecureConfig('ADMIN_PASSWORD') || 'Guest@123';
     
     // Add delay to prevent timing attacks
     await this.delay(Math.random() * 1000 + 500);
@@ -158,15 +158,15 @@ export class SecureAuthService {
     // For GitHub Pages, we'll use a secure configuration object
     const secureConfig: { [key: string]: string } = {
       'ADMIN_USERNAME': 'uumair327', // Your GitHub username
-      'ADMIN_PASSWORD': 'ReferralAdmin2025!@#', // Change this to your secure password
-      'ADMIN_EMAIL': 'admin@referraldashboard.com'
+      'ADMIN_PASSWORD': 'Guest@123', // Your preferred password
+      'ADMIN_EMAIL': 'uumair327@referralrewards.com'
     };
     
     return secureConfig[key] || null;
   }
 
   private getAdminEmail(): string {
-    return this.getSecureConfig('ADMIN_EMAIL') || 'admin@referraldashboard.com';
+    return this.getSecureConfig('ADMIN_EMAIL') || 'uumair327@referralrewards.com';
   }
 
   private generateSessionId(): string {
