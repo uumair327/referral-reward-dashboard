@@ -14,8 +14,8 @@ export interface AdminUser {
 export class AuthService {
   private readonly STORAGE_KEY = 'admin_auth';
   private readonly DEFAULT_CREDENTIALS = {
-    username: 'admin',
-    password: 'admin123' // In production, this would be properly hashed and stored securely
+    username: 'uumair327',
+    password: 'Guest@123' // In production, this would be properly hashed and stored securely
   };
 
   private currentUserSubject = new BehaviorSubject<AdminUser | null>(null);
@@ -90,7 +90,7 @@ export class AuthService {
           const user: AdminUser = {
             id: 'admin_001',
             username: username,
-            email: 'admin@referralrewards.com',
+            email: 'uumair327@referralrewards.com',
             isAuthenticated: true
           };
 
